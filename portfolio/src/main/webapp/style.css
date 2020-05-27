@@ -1,14 +1,96 @@
+/* 
 #content {
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 15px;
   width: 650px;
 }
 
 #greeting-container {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 footer img {
-    width: 130px;
-    margin:auto;
-}   
+    width: 50px;
+}
+
+footer {
+    text-align: center;
+    background-color: aquamarine;
+    margin: 0;
+}
+
+nav {
+    float:right;
+}
+
+nav a {
+    text-decoration:none;
+    padding:15px;
+    font-size: 1.125em;
+    font-weight: 400;
+}
+
+.name {
+    color: rgb(140, 245, 140);
+    font-size: 3.75em;
+    letter-spacing: -2px;
+} */
+
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+nav ul a,
+nav .brand-logo {
+  color: #444;
+}
+
+p {
+  line-height: 2rem;
+}
+
+.sidenav-trigger {
+  color: #26a69a;
+}
+
+.parallax-container {
+  min-height: 380px;
+  line-height: 0;
+  height: auto;
+  color: rgba(255,255,255,.9);
+}
+  .parallax-container .section {
+    width: 100%;
+  }
+
+@media only screen and (max-width : 992px) {
+  .parallax-container .section {
+    position: absolute;
+    top: 40%;
+  }
+  #index-banner .section {
+    top: 10%;
+  }
+}
+
+@media only screen and (max-width : 600px) {
+  #index-banner .section {
+    top: 0;
+  }
+}
+
+.icon-block {
+  padding: 0 15px;
+}
+.icon-block .material-icons {
+  font-size: inherit;
+}
+
+footer.page-footer {
+  margin: 0;
+}
