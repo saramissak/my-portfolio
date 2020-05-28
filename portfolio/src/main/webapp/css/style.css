@@ -57,7 +57,7 @@ footer.page-footer {
   margin: 0;
 }
 
-.active {
+nav.active {
   background-color: gainsboro;
 }
 

@@ -30,3 +30,11 @@ function addRandomFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
+
+function validate() {
+    var phone = $("#telephone").val();
+    if (phone.length != 10 || isNaN(phone)) {
+        alert("Phone  number is not valid or not valid format.");
+        return false;
+    }
+}
