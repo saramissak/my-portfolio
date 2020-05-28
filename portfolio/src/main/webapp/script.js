@@ -18,8 +18,10 @@
 function addRandomFact() {
   const facts =
       ['My favorite color is lime green.', 'I lived my whole life in New Jersey so far. Except for when I am in college.', 
-      'My inital interest in computer science started watching my brother play video games.', 
-      'My favorite drink is soda.', 'A hobby of mine is doing nails.'];
+      'My inital interest in computer science started when I was watching my brother play video games.', 
+      'My favorite drink is soda.', 
+      'I am addicted to soda.',
+      'A hobby of mine is doing nails.'];
 
   // Pick a random greeting.
   const fact = facts[Math.floor(Math.random() * facts.length)];

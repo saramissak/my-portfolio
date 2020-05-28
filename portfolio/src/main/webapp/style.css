@@ -60,3 +60,11 @@ footer.page-footer {
 .active {
     background-color: gainsboro;
 }
+
+#bolded {
+    font-weight: 600;
+}
+
+#title {
+    font-size: 6em;
+}
