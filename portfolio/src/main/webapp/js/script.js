@@ -31,12 +31,16 @@ function addRandomFact(id) {
   factContainer.innerHTML = fact;
 }
 
-
-function validate() {
-    var phone = $("#telephone").val();
-    if (phone.length != 10 || isNaN(phone)) {
-        alert("Phone  number is not valid or not valid format.");
-        return false;
-    }
+function validatePhoneNumber() {
+  var phone = $("#telephone").val();
+  var phoneNum = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g;
+  if(phone.match(phoneNum))
+  {
+	return true;
+  }
+  else
+  {	   
+    document.getElementById('invalid').innerHTML = "<p style='color:red; font-weight: 400'> Phone Number</p>";
+	return false;
+  }
 }
-

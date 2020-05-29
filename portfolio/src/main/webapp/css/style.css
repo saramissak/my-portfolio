@@ -96,3 +96,7 @@ nav.active {
   background-color: rgb(27, 248, 200) !important;
   color: #ffffff;
 }
+
+.outline-text {
+  text-shadow: 2px 2px #000;
+}
