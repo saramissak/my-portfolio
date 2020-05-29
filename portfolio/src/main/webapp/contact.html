@@ -28,7 +28,7 @@
     <script src='js/script.js'></script>
 
     <link rel='stylesheet' href='css/style.css'>
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src='https://code.jquery.com/jquery-1.9.1.min.js'></script>
 
 
   </head>
@@ -44,12 +44,12 @@
         </ul>
 
         <!-- For mobile use, edits -->
-        <ul id="nav-mobile" class="sidenav">
+        <ul id='nav-mobile' class='sidenav'>
           <li><a class='active' href='index.html'>About Me</a></li>
           <li><a href='projects.html'>My Projects</a></li>
           <li><a href='contact.html'>Contact Me</a></li>
         </ul>
-        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <a href='#' data-target='nav-mobile' class='sidenav-trigger'><i class='material-icons'>menu</i></a>
       </div>
    	</nav>
 
@@ -73,60 +73,60 @@
 	        <h4>Send me a message!</h4>
             
             <!-- Form starts here to send message -->
-            <form class="col s12" autocomplete="off" onsubmit="return validatePhoneNumber()" action="mailto:sarammissak@gmail.com" method="post" enctype="text/plain">
-              <div class="row">
-                <div class="input-field col s6">
-                  <i class="material-icons prefix">account_circle</i>
-                  <input id="firstName" type="text" class="validate" name="First Name" required>
-                  <label for="firstName">First Name</label>
+            <form class='col s12' autocomplete='off' onsubmit='return validatePhoneNumber()' action='mailto:sarammissak@gmail.com' method='post' enctype='text/plain'>
+              <div class='row'>
+                <div class='input-field col s6'>
+                  <i class='material-icons prefix'>account_circle</i>
+                  <input id='firstName' type='text' class='validate' name='First Name' required>
+                  <label for='firstName'>First Name</label>
                 </div>
-                <div class="input-field col s6">
-                  <input id="lastName" type="text" class="validate" name="Last Name" required>
-                  <label for="lastName">Last Name</label>
+                <div class='input-field col s6'>
+                  <input id='lastName' type='text' class='validate' name='Last Name' required>
+                  <label for='lastName'>Last Name</label>
                 </div>
               </div>
   
               <!-- Phone number input -->
-              <div class="row">
-                <div class="input-field col s12">
-                  <i class="material-icons prefix">phone</i>
-                  <input id="telephone" type="tel" class="validate" name="Phone Number" onblur='return validatePhoneNumber()' required>
-                  <label id="invalid" for="telephone">Phone Number</label>
+              <div class='row'>
+                <div class='input-field col s12'>
+                  <i class='material-icons prefix'>phone</i>
+                  <input id='telephone' type='tel' class='validate' name='Phone Number' onblur='return validatePhoneNumber()' required>
+                  <label id='invalid' for='telephone'>Phone Number</label>
                 </div>
               </div>
 
               <!-- Email input -->
-              <div class="row">
-                <div class="input-field col s12">
-                  <i class="material-icons prefix">email</i>
-                  <input id="email" type="email" class="validate" name="Email" required>
-                  <label for="email">Email</label>
+              <div class='row'>
+                <div class='input-field col s12'>
+                  <i class='material-icons prefix'>email</i>
+                  <input id='email' type='email' class='validate' name='Email' required>
+                  <label for='email'>Email</label>
                 </div>
               </div>
 
               <!-- Country inpput with autocompletion -->
-              <div class="row autocomplete">
-                <div class="input-field col s12">
-                  <i class="material-icons prefix">public</i>
-                  <input id="country" type="text" class="validate" name="Country">
-                  <label for="country">Country</label>
+              <div class='row autocomplete'>
+                <div class='input-field col s12'>
+                  <i class='material-icons prefix'>public</i>
+                  <input id='country' type='text' class='validate' name='Country'>
+                  <label for='country'>Country</label>
                 </div>
               </div>
 
               <!-- Messages input with autocompletion -->
-              <div class="row">
-                <div class="input-field col s12">
-                  <div class="autocomplete">
-                    <i class="material-icons prefix">mode_edit</i>
-                    <input id="Questions_Comments_Concerns_Messages"  type="text" class="materialize-textarea autocomplete validate" name="Message">
-                    <label for="Questions_Comments_Concerns_Messages">Question, Comments, Concerns, Messages</label>
+              <div class='row'>
+                <div class='input-field col s12'>
+                  <div class='autocomplete'>
+                    <i class='material-icons prefix'>mode_edit</i>
+                    <input id='Questions_Comments_Concerns_Messages'  type='text' class='materialize-textarea autocomplete validate' name='Message'>
+                    <label for='Questions_Comments_Concerns_Messages'>Question, Comments, Concerns, Messages</label>
                   </div>
                 </div>
               </div>
 
               <!-- submit button -->
-              <button class="btn waves-effect waves-light" type="submit">Submit
-                <i class="material-icons right">send</i>
+              <button class='btn waves-effect waves-light' type='submit'>Submit
+                <i class='material-icons right'>send</i>
               </button>
 
             </form>        
