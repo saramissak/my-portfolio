@@ -31,7 +31,7 @@
     <link rel='stylesheet' href='css/style.css'>
 
 </head>
-<body>
+<body onload='addRandomFact("fact-container1")'>
   <!-- Navigation Bar -->
   <nav class='white'>
     <div class='nav-wrapper container'>
@@ -75,6 +75,9 @@
         <div class='icon-block'>
           <h5 class='center'>About Me!</h5>
           <p class='light'>Hello, my name is Sara Missak and I go to Carnegie Mellon University as a part of the 2023+ class. I am majoring in Information Systems with an additional major in Computer Science.</p>
+          <p>A random fact about me is:</p>
+          <div id='fact-container1'></div>
+          <button onclick="addRandomFact('fact-container1')" class='waves-effect waves-light btn-small'>Click here for a new random fact!</button>
         </div>
       </div>
     </div>
@@ -177,7 +180,7 @@
     <div class='container'>
       <div class='row'>
         <div class='col l6 s12'>
-          <button onclick='addRandomFact()' class='waves-effect waves-light btn-large'>Click here for a random fact!</button>
+          <button onclick='addRandomFact("fact-container")' class='waves-effect waves-light btn-large'>Click here for a random fact!</button>
           <div id='fact-container'></div>
         </div>
         <div class='col l3 s12'>

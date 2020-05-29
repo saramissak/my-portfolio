@@ -5,8 +5,6 @@
     <meta name='author' content='Sara Missak'>
     <title>Contacts</title>
     
-    <script src='js/script.js'></script>
-
 	<!--Import Google Icon Font-->
     <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
     
@@ -26,7 +24,6 @@
     <script src='https://code.jquery.com/jquery-2.1.1.min.js'></script>
     <script src='js/materialize.min.js'></script>
     <script src='js/init.js'></script>
-
 
     <link rel='stylesheet' href='css/style.css'>
 
@@ -72,7 +69,8 @@
           <div class='col s12 center'>
         	<h3><i class='mdi-content-send brown-text'></i></h3>
 	        <h4>Send me a message!</h4>
-            <form class="col s12" onsubmit="return validate()" action="mailto:sarammissak@gmail.com" method="post" enctype="text/plain">
+            <!-- Form starts here to send message -->
+            <form class="col s12" autocomplete="off" onsubmit="return validate()" action="mailto:sarammissak@gmail.com" method="post" enctype="text/plain">
               <div class="row">
                 <div class="input-field col s6">
                   <i class="material-icons prefix">account_circle</i>
@@ -92,6 +90,7 @@
                   <label for="telephone">Phone Number (No dashes or parentheses)</label>
                 </div>
               </div>
+
               <div class="row">
                 <div class="input-field col s12">
                   <i class="material-icons prefix">email</i>
@@ -99,11 +98,24 @@
                   <label for="email">Email</label>
                 </div>
               </div>
+
+              <!-- Country inpput with autocompletion -->
+              <div class="row autocomplete">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">public</i>
+                  <input id="country" type="text" class="validate" name="Country">
+                  <label for="country">Country</label>
+                </div>
+              </div>
+
+              <!-- Messages input with autocompletion -->
               <div class="row">
                 <div class="input-field col s12">
-                  <i class="material-icons prefix">mode_edit</i>
-                  <textarea id="Questions_Comments_Concerns_Messages" class="materialize-textarea" maxlength="250" name="Message"></textarea>
-                  <label for="Questions_Comments_Concerns_Messages">Question, Comments, Concerns, Messages</label>
+                  <div class="autocomplete">
+                    <i class="material-icons prefix">mode_edit</i>
+                    <input id="Questions_Comments_Concerns_Messages"  type="text" class="materialize-textarea autocomplete validate" name="Message">
+                    <label for="Questions_Comments_Concerns_Messages">Question, Comments, Concerns, Messages</label>
+                  </div>
                 </div>
               </div>
 
@@ -143,6 +155,8 @@
       </div>
     </div>
   </footer>
+  <!-- JS for autocompletion -->
+  <script src='js/autocompletion.js'></script>
 
  </body>
 </html>

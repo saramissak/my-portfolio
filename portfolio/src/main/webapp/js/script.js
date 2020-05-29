@@ -15,7 +15,7 @@
 /**
  * Adds a random greeting to the page.
  */
-function addRandomFact() {
+function addRandomFact(id) {
   const facts =
       ['My favorite color is lime green.', 'I lived my whole life in New Jersey so far. Except for when I am in college.', 
       'My inital interest in computer science started when I was watching my brother play video games.', 
@@ -27,9 +27,10 @@ function addRandomFact() {
   const fact = facts[Math.floor(Math.random() * facts.length)];
 
   // Add it to the page.
-  const factContainer = document.getElementById('fact-container');
-  factContainer.innerText = fact;
+  const factContainer = document.getElementById(id);
+  factContainer.innerHTML = fact;
 }
+
 
 function validate() {
     var phone = $("#telephone").val();
@@ -38,3 +39,4 @@ function validate() {
         return false;
     }
 }
+
