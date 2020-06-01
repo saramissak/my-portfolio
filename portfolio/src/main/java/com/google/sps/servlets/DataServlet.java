@@ -42,11 +42,16 @@ public class DataServlet extends HttpServlet {
     response.setContentType("application/json;");
     
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
     PreparedQuery results = datastore.prepare(query);
+
     for (Entity entity : results.asIterable()) {
-        response.getWriter().println(entity.getPropert("fname"));
-        response.getWriter().println(entity.getPropert("lname"));
-        response.getWriter().println(entity.getPropert("comment"));
+        response.getWriter().println(entity.getProperty("fname"));
+        response.getWriter().println(entity.getProperty("lname"));
+        response.getWriter().println(entity.getProperty("message"));
+        response.getWriter().println("\n");
+        
     }
   }
   
