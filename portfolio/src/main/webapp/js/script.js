@@ -34,14 +34,12 @@ function addRandomFact(id) {
 function validatePhoneNumber() {
   var phone = $("#telephone").val();
   var phoneNum = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g;
-  if(phone.match(phoneNum))
-  {
+  if(phone.match(phoneNum)) {
     document.getElementById('invalid').innerHTML = "<p style='color:gray'> Phone Number</p>";
-	return true;
-  }
-  else
+    return true;
+  } else
   {	   
     document.getElementById('invalid').innerHTML = "<p style='color:red'> Phone Number</p>";
-	return false;
+    return false;
   }
 }
