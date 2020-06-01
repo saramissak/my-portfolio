@@ -17,8 +17,14 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import java.util.ArrayList;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
+// import com.google.sps.data.Task;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,13 +41,15 @@ public class DataServlet extends HttpServlet {
     response.setContentType("text/html;");
     response.setContentType("application/json;");
     
-    // response.getWriter().println(messages);
-    for (int i = 0; i < messages.size(); i++)
-    {
-      response.getWriter().println(messages.get(i));
+    Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    for (Entity entity : results.asIterable()) {
+        response.getWriter().println(entity.getPropert("fname"));
+        response.getWriter().println(entity.getPropert("lname"));
+        response.getWriter().println(entity.getPropert("comment"));
     }
   }
-
+  
   private String convertToJson(String fname, String lname, String message) {
     String json = "{";
     json += "\"fname\": " + "\"" +fname + "\", ";
@@ -56,8 +64,6 @@ public class DataServlet extends HttpServlet {
     String text = getParameter(request, "comment", "");
     String fname = getParameter(request, "fname", "");
     String lname = getParameter(request, "lname", "");
-
-    // messages.add(convertToJson(fname, lname, text));
 
     long timestamp = System.currentTimeMillis();
 
