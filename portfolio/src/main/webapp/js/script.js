@@ -31,12 +31,44 @@ function addRandomFact(id) {
   factContainer.innerHTML = fact;
 }
 
-
-function validate() {
-    var phone = $("#telephone").val();
-    if (phone.length != 10 || isNaN(phone)) {
-        alert("Phone  number is not valid or not valid format.");
-        return false;
-    }
+function validatePhoneNumber() {
+  var phone = $("#telephone").val();
+  var phoneNum = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g;
+  if(phone.match(phoneNum)) {
+    document.getElementById('invalid').innerHTML = "<p style='color:gray'> Phone Number</p>";
+    return true;
+  } else
+  {	   
+    document.getElementById('invalid').innerHTML = "<p style='color:red'> Phone Number</p>";
+    return false;
+  }
 }
 
+function getPhrase() {
+  console.log("getting phrase from /data");
+
+  const responsePromise = fetch('/data');
+
+  // When the request is complete, pass the response into handleResponse().
+  responsePromise.then(handleResponse);
+}
+
+function handleResponse(response) {
+  console.log('Handling the response.');
+
+  // response.text() returns a Promise, because the response is a stream of
+  // content and not a simple variable.
+  const textPromise = response.text();
+
+  // When the response is converted to text, pass the result into the
+  // addQuoteToDom() function.
+  textPromise.then(addQuoteToDom);
+}
+
+/** Adds a random quote to the DOM. */
+function addQuoteToDom(quote) {
+  console.log('Adding quote to dom: ' + quote);
+
+  const quoteContainer = document.getElementById('comments');
+  quoteContainer.innerHTML = quote;
+}

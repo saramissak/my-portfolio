@@ -31,7 +31,7 @@
     <link rel='stylesheet' href='css/style.css'>
 
 </head>
-<body onload='addRandomFact("fact-container1")'>
+<body onload='addRandomFact("fact-container1"); getPhrase();'>
   <!-- Navigation Bar -->
   <nav class='white'>
     <div class='nav-wrapper container'>
@@ -52,14 +52,14 @@
     </div>
   </nav>
 
-  <!-- First container with my name and brief title -->
+  <!-- First container with header-->
   <div id='index-banner' class='parallax-container'>
     <div class='section no-pad-bot'>
       <div class='container'>
         <br><br>
-        <h1 class='header center teal-text text-lighten-2' id='title'>Sara Missak</h1>
+        <h1 class='header center teal-text text-lighten-2 outline-text' id='title'>Sara Missak</h1>
         <div class='row center'>
-          <h5 class='header col s12 light' id='bolded'>Carnegie Mellon University, Information Systems and Computer Science</h5>
+          <h5 class='header col s12 light outline-text' id='bolded'>Carnegie Mellon University, Information Systems and Computer Science</h5>
         </div>
         <br><br>
       </div>
@@ -68,7 +68,7 @@
     <div class='parallax'><img src='images/background3.JPG' alt='Unsplashed background img 1'></div>
   </div>
 
-  <!-- Contians about me, image on right -->
+  <!-- Contians About -->
   <div class='container'>
     <div class='section'>
       <div class='row' >
@@ -88,7 +88,7 @@
     <div class='section no-pad-bot'>
       <div class='container'>
         <div class='row center'>
-          <h5 class='header col s12 light' id='bolded'>Courses Taken!</h5>
+          <h5 class='header col s12 light outline-text' id='bolded'>Courses Taken!</h5>
         </div>
       </div>
     </div>
@@ -124,7 +124,7 @@
         </div>
       </div>
     </div>
-    <div class='parallax'><img src='images/background4.JPG' alt='Unsplashed background img 3'></div>
+    <div class='parallax'><img src='images/background5.JPG' alt='Unsplashed background img 3'></div>
   </div>
 
   <!-- Sixth (white) container -->
@@ -151,11 +151,11 @@
     <div class='section no-pad-bot'>
       <div class='container'>
         <div class='row center'>
-          <h5 class='header col s12 light' id='bolded'>Awards</h5>
+          <h5 class='header col s12 light outline-text' id='bolded'>Awards</h5>
         </div>
       </div>
     </div>
-    <div class='parallax'><img src='images/background5.JPG' alt='Unsplashed background img 4'></div>
+    <div class='parallax'><img src='images/background10.JPG' alt='Unsplashed background img 4'></div>
   </div>
 
   <!-- 8th (white) container -->
@@ -175,6 +175,48 @@
       </div>
     </div>
   </div>
+
+  <!-- 9th (image) container -->
+  <div class='parallax-container valign-wrapper'>
+    <div class='section no-pad-bot'>
+      <div class='container'>
+        <div class='row center'>
+          <h5 class='header col s12 light outline-text' id='bolded'>Awards</h5>
+        </div>
+      </div>
+    </div>
+    <div class='parallax'><img src='images/background4.JPG' alt='Unsplashed background img 4'></div>
+  </div>
+
+  <!-- 10th (white) container -->
+  <div class='container'>
+    <div class='section'>
+      <div class='row'>
+        <div class='col s12 center'>
+          <h3><i class='mdi-content-send brown-text'></i></h3>
+    	  <h4>Leave a question, comment, or message</h4>
+          <form action="/data" method="POST">
+
+            <p>First Name: </p>
+            <textarea name="fname"></textarea>
+            <br/><br/>
+
+            <p>Last Name: </p>
+            <textarea name="lname"></textarea>
+            <br/><br/>
+
+            <p>Message: </p>
+            <textarea name="comment"></textarea>
+            <br/><br/>
+
+            <input type="submit" />
+          </form>
+          <div id='comments'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <footer class='page-footer teal'>
     <div class='container'>
