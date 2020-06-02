@@ -44,10 +44,19 @@ function validatePhoneNumber() {
   }
 }
 
+function getCommentLimit() {
+    let tmp = (new URL(document.location)).searchParams;
+    let res = tmp.get("num-results");
+    if(!res || res.length === 0) {
+        return "10";
+    }
+    return res;
+}
+
 function getPhrase() {
   console.log("getting phrase from /data");
 
-  const responsePromise = fetch('/data');
+  const responsePromise = fetch('/data?num-results=' + getCommentLimit());
 
   // When the request is complete, pass the response into handleResponse().
   responsePromise.then(handleResponse);
@@ -70,5 +79,6 @@ function addQuoteToDom(quote) {
   console.log('Adding quote to dom: ' + quote);
 
   const quoteContainer = document.getElementById('comments');
+//   quoteContainer.innerHTML = "<br><h1>" + quote + "\n</h1>";
   quoteContainer.innerHTML = quote;
 }

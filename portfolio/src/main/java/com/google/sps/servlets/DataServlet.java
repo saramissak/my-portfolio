@@ -35,29 +35,50 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private ArrayList<String> messages = new ArrayList<String>();
+  private ArrayList<String> firstName = new ArrayList<String>();
+  private ArrayList<String> lastName = new ArrayList<String>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
     response.setContentType("application/json;");
-    
+
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     PreparedQuery results = datastore.prepare(query);
 
-    for (Entity entity : results.asIterable()) {
-        response.getWriter().println(entity.getProperty("fname"));
-        response.getWriter().println(entity.getProperty("lname"));
-        response.getWriter().println(entity.getProperty("message"));
-        response.getWriter().println("\n");
-        
+    String numResultsString = (request.getQueryString());
+    int numResults;
+    if (numResultsString == null) {
+        numResults = 1;
+    } else if (numResultsString.equals("num-results=10")) {
+        numResults = 10;
+    } else if (numResultsString.equals("num-results=20")) {
+        numResults = 20;
+    } else if (numResultsString.equals("num-results=30")) {
+        numResults = 30;
+    } else if (numResultsString.equals("num-results=40")) {
+        numResults = 40;
+    } else {
+        numResults = 1;
     }
+
+    for (Entity entity : results.asIterable()) {
+        numResults--;
+        response.getWriter().println("<br> <h5>" + entity.getProperty("fname"));
+        response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
+        response.getWriter().println(entity.getProperty("message"));
+        if (numResults <= 0) break;
+    }
+
+    // // Redirect back to the HTML page.
+    // if (request.getQueryString() != null) {
+    //     response.sendRedirect("/index.html?" +  request.getQueryString());
+    // }
   }
   
   private String convertToJson(String fname, String lname, String message) {
     String json = "{";
-    json += "\"fname\": " + "\"" +fname + "\", ";
+    json += "\"fname\": " + "\"" + fname + "\", ";
     json += "\"lname\": " + "\""  + lname + "\", ";
     json += "\"message\": " + "\"" + message + "\"" ;
     json += "}";
@@ -91,5 +112,11 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+
+  private String convertToJsonUsingGson(ArrayList<String> serverStats) {
+    Gson gson = new Gson();
+    String json = gson.toJson(serverStats);
+    return json;
   }
 }

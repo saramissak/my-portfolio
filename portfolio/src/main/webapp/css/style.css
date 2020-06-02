@@ -100,3 +100,8 @@ nav.active {
 .outline-text {
   text-shadow: 2px 2px #000;
 }
+
+select {
+    display: inline-block;
+    width: 10%;
+}
