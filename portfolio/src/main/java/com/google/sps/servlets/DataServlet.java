@@ -21,7 +21,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
-// import com.google.sps.data.Task;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,22 +68,8 @@ public class DataServlet extends HttpServlet {
         response.getWriter().println(entity.getProperty("message"));
         if (numResults <= 0) break;
     }
-
-    // // Redirect back to the HTML page.
-    // if (request.getQueryString() != null) {
-    //     response.sendRedirect("/index.html?" +  request.getQueryString());
-    // }
   }
   
-  private String convertToJson(String fname, String lname, String message) {
-    String json = "{";
-    json += "\"fname\": " + "\"" + fname + "\", ";
-    json += "\"lname\": " + "\""  + lname + "\", ";
-    json += "\"message\": " + "\"" + message + "\"" ;
-    json += "}";
-    return json;
-  }
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = getParameter(request, "comment", "");
@@ -112,11 +97,5 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
-  }
-
-  private String convertToJsonUsingGson(ArrayList<String> serverStats) {
-    Gson gson = new Gson();
-    String json = gson.toJson(serverStats);
-    return json;
   }
 }
