@@ -82,8 +82,16 @@ function addQuoteToDom(quote) {
   quoteContainer.innerHTML = quote;
 }
 
-function deletComments() {
+function deleteComments() {
   const request = new Request('/delete-data', {method: 'POST'});
   const responsePromise = fetch(request);
+}
 
+/** Tells the server to delete the task. */
+function deleteComment(comment) {
+  const params = new URLSearchParams();
+  params.append('id', comment);
+  const request = new Request('/delete-comment', {method: 'POST', body: params});
+
+  const responsePromise = fetch(request);
 }

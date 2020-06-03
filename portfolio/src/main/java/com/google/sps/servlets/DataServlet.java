@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,14 +29,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Key;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
-  private ArrayList<String> messages = new ArrayList<String>();
-  private ArrayList<String> firstName = new ArrayList<String>();
-  private ArrayList<String> lastName = new ArrayList<String>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -45,27 +44,18 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    String numResultsString = (request.getQueryString());
-    int numResults;
-    if (numResultsString == null) {
-        numResults = 1;
-    } else if (numResultsString.equals("num-results=10")) {
-        numResults = 10;
-    } else if (numResultsString.equals("num-results=20")) {
-        numResults = 20;
-    } else if (numResultsString.equals("num-results=30")) {
-        numResults = 30;
-    } else if (numResultsString.equals("num-results=40")) {
-        numResults = 40;
-    } else {
-        numResults = 1;
-    }
+    String numResultsString = request.getParameter("num-results");
+    int numResults = 1;
+    if (numResultsString != null) {
+        numResults = Integer.parseInt(numResultsString);
+    } 
 
     for (Entity entity : results.asIterable()) {
         numResults--;
-        response.getWriter().println("<br> <h5>" + entity.getProperty("fname"));
+        response.getWriter().println("<div id=\"" + KeyFactory.keyToString(entity.getKey()) +"\"><br><h5>" + entity.getProperty("fname"));
         response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
         response.getWriter().println(entity.getProperty("message"));
+        response.getWriter().println("<input type='submit' value='Delete Comment' onclick='deleteComment(\""+ KeyFactory.keyToString(entity.getKey()) +"\")'></div>");
         if (numResults <= 0) break;
     }
   }

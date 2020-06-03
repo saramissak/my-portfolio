@@ -51,7 +51,7 @@
     </div>
   </nav>
 
-  <!-- First container with header-->
+  <!-- container with header-->
   <div id='index-banner' class='parallax-container'>
     <div class='section no-pad-bot'>
       <div class='container'>
@@ -64,10 +64,10 @@
       </div>
     </div>
     <!-- back ground image for first container -->
-    <div class='parallax'><img src='images/background3.JPG' alt='Unsplashed background img 1'></div>
+    <div class='parallax'><img src='images/flowers-above-grass.JPG' alt='Pink and white flowers above the grass'></div>
   </div>
 
-  <!-- Contians About -->
+  <!-- Contians About Me-->
   <div class='container'>
     <div class='section'>
       <div class='row' >
@@ -82,7 +82,7 @@
     </div>
   </div>
 
-  <!-- Third container with image, courses taken -->
+  <!-- container with image, courses taken -->
   <div class='parallax-container valign-wrapper'>
     <div class='section no-pad-bot'>
       <div class='container'>
@@ -91,10 +91,10 @@
         </div>
       </div>
     </div>
-    <div class='parallax'><img src='images/background2.JPG' alt='Unsplashed background img 2'></div>
+    <div class='parallax'><img src='images/pink-flower-person-behind.JPG' alt='Pink flower with blurred person in background'></div>
   </div>
 
-  <!-- Fourth (White) container -->
+  <!-- Fall Courses -->
   <div class='container'>
     <div class='section'>
       <div class='row'>
@@ -115,7 +115,7 @@
     </div>
   </div>
 
-  <!-- 5th (white) container -->
+  <!-- Spring Courses container -->
   <div class='container'>
     <div class='section'>
       <div class='row'>
@@ -134,7 +134,7 @@
     </div>
   </div>
 
-  <!-- 6th (image) container -->
+  <!-- Awards header container -->
   <div class='parallax-container valign-wrapper'>
     <div class='section no-pad-bot'>
       <div class='container'>
@@ -143,10 +143,10 @@
         </div>
       </div>
     </div>
-    <div class='parallax'><img src='images/background10.JPG' alt='Unsplashed background img 4'></div>
+    <div class='parallax'><img src='images/sunsetting-at-track-field.JPG' alt='Sun setting at a track field'></div>
   </div>
 
-  <!-- 7th (white) container -->
+  <!-- list of awards container -->
   <div class='container'>
     <div class='section'>
       <div class='row'>
@@ -164,7 +164,7 @@
     </div>
   </div>
 
-  <!-- 8th (image) container -->
+  <!-- Comments header container -->
   <div class='parallax-container valign-wrapper'>
     <div class='section no-pad-bot'>
       <div class='container'>
@@ -173,10 +173,10 @@
         </div>
       </div>
     </div>
-    <div class='parallax'><img src='images/background5.JPG' alt='Unsplashed background img 4'></div>
+    <div class='parallax'><img src='images/white-flowers.JPG' alt='A bunch of white flowers'></div>
   </div>
 
-  <!-- 9th (white) container -->
+  <!-- enter and view comments container -->
   <div class='container'>
     <div class='section'>
       <div class='row'>
@@ -210,9 +210,12 @@
             <input type="submit" value="Change" onclick="getComments()"/>
           </form>
           <form method="POST">
-            <input type="submit" value="Delete All Comments" onclick="deletComments()">
+            <input type="submit" value="Delete All Comments" onclick="deleteComments()">
           </form>
-          <div id='comments'></div>
+          <form method="POST">
+            <div id='comments'></div>
+          </form>
+          
         </div>
       </div>
     </div>
