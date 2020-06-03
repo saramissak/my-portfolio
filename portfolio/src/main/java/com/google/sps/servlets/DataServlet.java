@@ -21,7 +21,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
-// import com.google.sps.data.Task;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,35 +34,42 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private ArrayList<String> messages = new ArrayList<String>();
+  private ArrayList<String> firstName = new ArrayList<String>();
+  private ArrayList<String> lastName = new ArrayList<String>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
     response.setContentType("application/json;");
-    
+
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     PreparedQuery results = datastore.prepare(query);
 
+    String numResultsString = (request.getQueryString());
+    int numResults;
+    if (numResultsString == null) {
+        numResults = 1;
+    } else if (numResultsString.equals("num-results=10")) {
+        numResults = 10;
+    } else if (numResultsString.equals("num-results=20")) {
+        numResults = 20;
+    } else if (numResultsString.equals("num-results=30")) {
+        numResults = 30;
+    } else if (numResultsString.equals("num-results=40")) {
+        numResults = 40;
+    } else {
+        numResults = 1;
+    }
+
     for (Entity entity : results.asIterable()) {
-        response.getWriter().println(entity.getProperty("fname"));
-        response.getWriter().println(entity.getProperty("lname"));
+        numResults--;
+        response.getWriter().println("<br> <h5>" + entity.getProperty("fname"));
+        response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
         response.getWriter().println(entity.getProperty("message"));
-        response.getWriter().println("\n");
-        
+        if (numResults <= 0) break;
     }
   }
   
-  private String convertToJson(String fname, String lname, String message) {
-    String json = "{";
-    json += "\"fname\": " + "\"" +fname + "\", ";
-    json += "\"lname\": " + "\""  + lname + "\", ";
-    json += "\"message\": " + "\"" + message + "\"" ;
-    json += "}";
-    return json;
-  }
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = getParameter(request, "comment", "");

@@ -17,7 +17,7 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     
     <!-- Compiled and minified CSS from materalizecss.com-->
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css'>
+    <!-- <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css'> -->
 
     <!-- Compiled and minified JavaScript from materalizecss.com-->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js'></script>
@@ -27,11 +27,10 @@
     <script src='js/materialize.min.js'></script>
     <script src='js/init.js'></script>
 
-
     <link rel='stylesheet' href='css/style.css'>
 
 </head>
-<body onload='addRandomFact("fact-container1"); getPhrase();'>
+<body onload='addRandomFact("fact-container1"); getComments();'>
   <!-- Navigation Bar -->
   <nav class='white'>
     <div class='nav-wrapper container'>
@@ -116,18 +115,7 @@
     </div>
   </div>
 
-  <!-- Fifth (image) Container -->
-  <div class='parallax-container valign-wrapper'>
-    <div class='section no-pad-bot'>
-      <div class='container'>
-        <div class='row center'>
-        </div>
-      </div>
-    </div>
-    <div class='parallax'><img src='images/background5.JPG' alt='Unsplashed background img 3'></div>
-  </div>
-
-  <!-- Sixth (white) container -->
+  <!-- 5th (white) container -->
   <div class='container'>
     <div class='section'>
       <div class='row'>
@@ -146,7 +134,7 @@
     </div>
   </div>
 
-  <!-- Seventh (image) container -->
+  <!-- 6th (image) container -->
   <div class='parallax-container valign-wrapper'>
     <div class='section no-pad-bot'>
       <div class='container'>
@@ -158,7 +146,7 @@
     <div class='parallax'><img src='images/background10.JPG' alt='Unsplashed background img 4'></div>
   </div>
 
-  <!-- 8th (white) container -->
+  <!-- 7th (white) container -->
   <div class='container'>
     <div class='section'>
       <div class='row'>
@@ -176,19 +164,19 @@
     </div>
   </div>
 
-  <!-- 9th (image) container -->
+  <!-- 8th (image) container -->
   <div class='parallax-container valign-wrapper'>
     <div class='section no-pad-bot'>
       <div class='container'>
         <div class='row center'>
-          <h5 class='header col s12 light outline-text' id='bolded'>Awards</h5>
+          <h5 class='header col s12 light outline-text' id='bolded'>Question, Comment, and Message</h5>
         </div>
       </div>
     </div>
-    <div class='parallax'><img src='images/background4.JPG' alt='Unsplashed background img 4'></div>
+    <div class='parallax'><img src='images/background5.JPG' alt='Unsplashed background img 4'></div>
   </div>
 
-  <!-- 10th (white) container -->
+  <!-- 9th (white) container -->
   <div class='container'>
     <div class='section'>
       <div class='row'>
@@ -200,16 +188,29 @@
             <p>First Name: </p>
             <textarea name="fname"></textarea>
             <br/><br/>
-
             <p>Last Name: </p>
             <textarea name="lname"></textarea>
             <br/><br/>
-
             <p>Message: </p>
             <textarea name="comment"></textarea>
             <br/><br/>
-
             <input type="submit" />
+          </form>
+          <br/><br/><br/>
+
+          <form method="GET">
+            <label for="num-results">Choose the number of results you would like to be shown:</label>
+            <select name="num-results" id="num-results">
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="40">40</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Change" onclick="getComments()"/>
+          </form>
+          <form method="POST">
+            <input type="submit" value="Delete All Comments" onclick="deletComments()">
           </form>
           <div id='comments'></div>
         </div>
