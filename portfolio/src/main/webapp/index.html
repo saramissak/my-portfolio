@@ -27,11 +27,10 @@
     <script src='js/materialize.min.js'></script>
     <script src='js/init.js'></script>
 
-
     <link rel='stylesheet' href='css/style.css'>
 
 </head>
-<body onload='addRandomFact("fact-container1"); getPhrase();'>
+<body onload='addRandomFact("fact-container1"); getComments();'>
   <!-- Navigation Bar -->
   <nav class='white'>
     <div class='nav-wrapper container'>
@@ -208,9 +207,11 @@
               <option value="40">40</option>
             </select>
             <br><br>
-            <input type="submit" value="Change" onclick="getPhrase()"/>
+            <input type="submit" value="Change" onclick="getComments()"/>
           </form>
-
+          <form method="POST">
+            <input type="submit" value="Delete All Comments" onclick="deletComments()">
+          </form>
           <div id='comments'></div>
         </div>
       </div>

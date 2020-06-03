@@ -53,7 +53,7 @@ function getCommentLimit() {
     return res;
 }
 
-function getPhrase() {
+function getComments() {
   console.log("getting phrase from /data");
 
   const responsePromise = fetch('/data?num-results=' + getCommentLimit());
@@ -79,6 +79,11 @@ function addQuoteToDom(quote) {
   console.log('Adding quote to dom: ' + quote);
 
   const quoteContainer = document.getElementById('comments');
-//   quoteContainer.innerHTML = "<br><h1>" + quote + "\n</h1>";
   quoteContainer.innerHTML = quote;
+}
+
+function deletComments() {
+  const request = new Request('/delete-data', {method: 'POST'});
+  const responsePromise = fetch(request);
+
 }
