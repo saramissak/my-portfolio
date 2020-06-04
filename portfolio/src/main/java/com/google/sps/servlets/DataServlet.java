@@ -31,12 +31,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
-import java.time.format.DateTimeFormatter;  
-import java.time.LocalDateTime;    
+import java.text.DateFormat;  
+import java.text.SimpleDateFormat;  
+import java.util.Date;  
+import java.util.Calendar;  
 
 /** Servlet that returns some example content. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+
+  private int numOfResults;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -47,36 +51,54 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     String numResultsString = request.getParameter("num-results");
-    int numResults = 1;
+    int numResults = 10;
     if (numResultsString != null) {
         numResults = Integer.parseInt(numResultsString);
     } 
 
-    for (Entity entity : results.asIterable()) {
-        numResults--;
-        response.getWriter().println("<div id=\"" + KeyFactory.keyToString(entity.getKey()) +"\"><br><h5>" + entity.getProperty("fname"));
-        response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
-        response.getWriter().println(entity.getProperty("message"));
-        response.getWriter().println("<input type='submit' value='Delete Comment' onclick='deleteComment(\""+ KeyFactory.keyToString(entity.getKey()) +"\")'></div>");
-        if (numResults <= 0) break;
+    String pageString = request.getParameter("page");
+    int page = 0;
+    if (pageString != null) {
+        response.getWriter().println("entered");
+        page = Integer.parseInt(pageString);
     }
+
+    response.getWriter().println("<form method='GET'>");
+    response.getWriter().println("<input type='submit' name='page' value='Next Page' onclick='nextPage(" + Integer.toString(page+1) + ")'/></form>");
+    response.getWriter().println(Integer.toString(page+1));
+
+    int numOfResultsHolder = 0;
+    for (Entity entity : results.asIterable()) {
+        numOfResultsHolder++;
+        if (numResults > 0 && numOfResultsHolder > page*numResults)
+        {
+            numResults--;
+            response.getWriter().println("<div id=\"" + KeyFactory.keyToString(entity.getKey()) +"\"><br><h5>" + entity.getProperty("fname"));
+            response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
+            response.getWriter().println("<p>" + entity.getProperty("message") + "</p>");
+            response.getWriter().println("<input type='submit' value='Delete' onclick='deleteComment(\""+ KeyFactory.keyToString(entity.getKey()) +"\")' class='btn waves-light right-shift'></div>");
+        }
+        
+    }
+
+    // response.getWriter().println("<form method='GET'><input type='submit' id='page' value='Next Page' onclick='nextPage(" + (page+1) + ")'/></form>");
+
+    numOfResults = numOfResultsHolder;
   }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = getParameter(request, "comment", "");
     String fname = getParameter(request, "fname", "");
-    String lname = getParameter(request, "lname", "");
+    String lname = getParameter(request, "lname", ""); 
 
-    long timestamp = System.currentTimeMillis();
-    // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-
+    long time = System.currentTimeMillis();
 
     Entity taskEntity = new Entity("Messages");
     taskEntity.setProperty("message", text);
     taskEntity.setProperty("fname", fname);
     taskEntity.setProperty("lname", lname);
-    taskEntity.setProperty("timestamp", timestamp);
+    taskEntity.setProperty("timestamp", time);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);

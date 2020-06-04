@@ -105,3 +105,7 @@ select {
     display: inline-block;
     width: 10%;
 }
+
+.right-shift {
+    float: right;
+}

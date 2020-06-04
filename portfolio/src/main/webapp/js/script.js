@@ -44,19 +44,22 @@ function validatePhoneNumber() {
   }
 }
 
-function getCommentLimit() {
+function getParameter(id, defaultVal) {
     let tmp = (new URL(document.location)).searchParams;
-    let res = tmp.get("num-results");
+    let res = tmp.get(id);
     if(!res || res.length === 0) {
-        return "10";
+        return defaultVal;
     }
     return res;
 }
 
+
+
+
 function getComments() {
   console.log("getting phrase from /data");
 
-  const responsePromise = fetch('/data?num-results=' + getCommentLimit());
+  const responsePromise = fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + getParameter("page", "0"));
 
   // When the request is complete, pass the response into handleResponse().
   responsePromise.then(handleResponse);
@@ -94,4 +97,11 @@ function deleteComment(comment) {
   const request = new Request('/delete-comment', {method: 'POST', body: params});
 
   const responsePromise = fetch(request);
+}
+
+function nextPage(page) {
+  const responsePromise = fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + page);
+
+  // When the request is complete, pass the response into handleResponse().
+  responsePromise.then(handleResponse);
 }

@@ -183,8 +183,8 @@
         <div class='col s12 center'>
           <h3><i class='mdi-content-send brown-text'></i></h3>
     	  <h4>Leave a question, comment, or message</h4>
-          <form action="/data" method="POST">
 
+          <form action="/data" method="POST">
             <p>First Name: </p>
             <textarea name="fname"></textarea>
             <br/><br/>
@@ -194,8 +194,9 @@
             <p>Message: </p>
             <textarea name="comment"></textarea>
             <br/><br/>
-            <input type="submit" />
+            <input type="submit" class="btn waves-light"/>
           </form>
+
           <br/><br/><br/>
 
           <form method="GET">
@@ -206,12 +207,14 @@
               <option value="30">30</option>
               <option value="40">40</option>
             </select>
-            <br><br>
-            <input type="submit" value="Change" onclick="getComments()"/>
+            <br/>
+            <input type="submit" value="Change" onclick="getComments()" class="btn waves-light"/>
           </form>
 
+          <br/><br/><br/>
+
           <form method="POST">
-            <input type="submit" value="Delete All Comments" onclick="deleteAllComments()">
+            <input type="submit" value="Delete All Comments" onclick="deleteAllComments()" class="btn waves-light"/>
           </form>
           
           <form method="POST">
