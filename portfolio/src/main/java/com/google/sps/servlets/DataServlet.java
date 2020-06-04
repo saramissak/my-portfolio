@@ -31,8 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;    
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that returns some example content. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -67,6 +69,8 @@ public class DataServlet extends HttpServlet {
     String lname = getParameter(request, "lname", "");
 
     long timestamp = System.currentTimeMillis();
+    // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+
 
     Entity taskEntity = new Entity("Messages");
     taskEntity.setProperty("message", text);

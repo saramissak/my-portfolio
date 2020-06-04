@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet responsible for deleting tasks. */
 @WebServlet("/delete-comment")
-public class DeleteTaskServlet extends HttpServlet {
+public class DeleteIndividualCommentsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

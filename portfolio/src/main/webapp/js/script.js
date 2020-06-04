@@ -82,7 +82,7 @@ function addQuoteToDom(quote) {
   quoteContainer.innerHTML = quote;
 }
 
-function deleteComments() {
+function deleteAllComments() {
   const request = new Request('/delete-data', {method: 'POST'});
   const responsePromise = fetch(request);
 }
