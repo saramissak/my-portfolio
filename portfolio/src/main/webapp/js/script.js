@@ -59,15 +59,14 @@ function getParameter(id, defaultVal) {
 
 
 function getComments() {
-    fetch('/data').then(response => response.json()).then((comments) => {
+    fetch('/data?num-results=' + document.getElementById("num-results").value + '&page=0').then(response => response.json()).then((data) => {
         const commentsSection = document.getElementById("comments");
         commentsSection.innerHTML = "";
-        console.log(document.getElementById("num-results").value);
         createChangePageButtons();
 
         var i = 0; 
         pageNum = 0;
-        comments.forEach((line) => {
+        data.comments.forEach((line) => {
             if(i < (document.getElementById("num-results").value))
                 commentsSection.appendChild(createComment(line));
             i++
@@ -81,9 +80,9 @@ function changePage(sign) {
   } else {
       pageNum--;
   }
-  fetch('/data').then(response => response.json()).then((commentsSection) => {
+  fetch('/data?num-results=' + document.getElementById("num-results").value + '&page=' + pageNum).then(response => response.json()).then((data) => {
     //  This to check if you can go more backwards or forwards so you do not get any blank pages
-    if (commentsSection.length > pageNum*document.getElementById("num-results").value && pageNum >= 0)
+    if (data.totalNumOfComments > pageNum*document.getElementById("num-results").value && pageNum >= 0)
     {
         createChangePageButtons();
 
@@ -93,13 +92,9 @@ function changePage(sign) {
         var resultsNum = document.getElementById("num-results").value;
         var offset = (pageNum)*resultsNum;
 
-        comments.forEach((line) => {
-          if (resultsNum > 0 && offset <= 0)
-          {
-            commentsSection.appendChild(createComment(line));
-            resultsNum--;
-          }
-          offset--;
+        data.comments.forEach((line) => {
+          commentsSection.appendChild(createComment(line));
+          resultsNum--;
         });
     } else { // If you cannot go any more forward or backward reverse the change of page count
         if(sign.localeCompare("+") == 0){
@@ -117,8 +112,8 @@ function changePage(sign) {
 function createComment(text) {
   const divElement = document.createElement("div");
   divElement.id = 'comment';
-  divElement.innerHTML = "<h5>" + text.fname + " " + text.lname + "</h5><p>"  + 
-  "<input type='submit' value='Delete' onclick='deleteComment(\""+ text.key +"\")' class='btn waves-light right-shift'> " + text.message + "</p>";
+  divElement.innerHTML = "<h5><input type='submit' value='x' onclick='deleteComment(\""+ text.key +"\")' class='right-shift'> "  + text.fname + " " + text.lname + "</h5><p>"  + 
+   text.message + "</p><br/><br/>";
   return divElement;
 }
 

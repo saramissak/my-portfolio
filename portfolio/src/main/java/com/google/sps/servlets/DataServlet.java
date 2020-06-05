@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Comment;
+import com.google.sps.data.TotalComments;
 import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -35,36 +36,56 @@ import com.google.appengine.api.datastore.Key;
 import java.text.DateFormat;  
 import java.text.SimpleDateFormat;  
 import java.util.Date;  
-import java.util.Calendar;  
+import java.util.Calendar; 
+import com.google.appengine.api.datastore.FetchOptions;
+
 
 /** Servlet that returns some example content. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private int numOfResults;
   private ArrayList<Comment> comments = new ArrayList<Comment>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
+
+    String numResultsString = request.getParameter("num-results");
+    int numResults = 10;
+    if (numResultsString != null) {
+        numResults = Integer.parseInt(numResultsString);
+    } 
+
+    String pageString = request.getParameter("page");
+    int page = 0;
+    if (pageString != null) {
+        page = Integer.parseInt(pageString);
+    }
     
+    int offset = page*numResults;
 
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(offset + numResults));
 
-    comments = new ArrayList<Comment>();
-
-    for (Entity entity : results.asIterable()) {
-        Comment comment = new Comment();
-        comment.fname =  (String) entity.getProperty("fname");
-        comment.lname =  (String) entity.getProperty("lname");
-        comment.message =  (String) entity.getProperty("message");
-        comment.timeStamp =  (long) entity.getProperty("timestamp");
-        comment.key = (String) KeyFactory.keyToString(entity.getKey());
-        comments.add(comment);
+    if (0 < offset+numResults && offset < entities.size())
+    {
+      comments = new ArrayList<Comment>();
     }
-    String json = new Gson().toJson(comments);
+    for (int i = offset; i < offset+numResults && i < entities.size() && i >= 0; i++) {
+      Comment comment = new Comment();
+      comment.fname =  (String) entities.get(i).getProperty("fname");
+      comment.lname =  (String) entities.get(i).getProperty("lname");
+      comment.message =  (String) entities.get(i).getProperty("message");
+      comment.timeStamp =  (long) entities.get(i).getProperty("timestamp");
+      comment.key = (String) KeyFactory.keyToString(entities.get(i).getKey());
+      comments.add(comment);
+    }
+    
+    TotalComments data = new TotalComments(comments, results.countEntities());
+
+    String json = new Gson().toJson(data);
     response.getWriter().println(json);
   }
   
