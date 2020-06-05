@@ -61,7 +61,8 @@ function getParameter(id, defaultVal) {
 function getComments() {
     fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=0").then(response => response.json()).then((messages) => {
         const comments = document.getElementById("comments");
-        document.getElementById("page").innerHTML = "<form='GET'><input type='submit' name='page' value='Next Page' onclick='nextPage()'/></form>"
+        createChangePageButtons();
+
         var i = 0; 
         pageNum = 0;
         messages.forEach((line) => {
@@ -72,12 +73,17 @@ function getComments() {
     });
 }
 
-function nextPage() {
-  pageNum++;
+function changePage(sign) {
+  if(sign.localeCompare("+") == 0){
+      pageNum++;
+  } else {
+      pageNum--;
+  }
   fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + pageNum).then(response => response.json()).then((messages) => {
-    if (messages.length > pageNum*parseInt(getParameter('num-results', "10")))
+    //  This to check if you can go more backwards or forwards so you do not get any blank pages
+    if (messages.length > pageNum*parseInt(getParameter('num-results', "10")) && pageNum >= 0)
     {
-        document.getElementById("page").innerHTML = "<form='GET'><input type='submit' name='page' value='Next Page' onclick='nextPage()'/></form>"
+        createChangePageButtons();
 
         const comments = document.getElementById("comments");
         comments.innerHTML = "";
@@ -93,11 +99,17 @@ function nextPage() {
           }
           offset--;
         });
-    } else {
-        pageNum--;
+    } else { // If you cannot go any more forward or backward reverse the change of page count
+        if(sign.localeCompare("+") == 0){
+           pageNum--;
+        } else {
+           pageNum++;
+        }
     }
   });
 }
+
+
 
 /** Creates an <div> element containing text. */
 function createComment(text) {
@@ -122,4 +134,12 @@ function deleteComment(comment) {
   const comments = document.getElementById("comments");
   comments.innerHTML = "";
   getComments();
+}
+
+function createChangePageButtons() {
+  document.getElementById("chanegPageTop").innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
+  
+  document.getElementById("chanegPageBottom").innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
 }
