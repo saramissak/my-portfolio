@@ -24,8 +24,6 @@ public class DeleteIndividualCommentsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.getWriter().println("<input type='submit' value='Delete Comment' onclick='deleteComment('></div>");
-
     Key id = KeyFactory.stringToKey(request.getParameter("id"));
 
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);

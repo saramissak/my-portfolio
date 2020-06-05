@@ -5,4 +5,5 @@ public class Comments {
     public String lname;
     public String message;
     public long timeStamp;
+    public String key;
 }

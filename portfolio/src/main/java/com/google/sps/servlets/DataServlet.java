@@ -53,47 +53,19 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
+    messages = new ArrayList<Comments>();
 
-    // String numResultsString = request.getParameter("num-results");
-    // int numResults = 10;
-    // if (numResultsString != null) {
-    //     numResults = Integer.parseInt(numResultsString);
-    // } 
-
-    // String pageString = request.getParameter("page");
-    // int page = 0;
-    // if (pageString != null) {
-    //     page = Integer.parseInt(pageString);
-    // }
-
-    // response.getWriter().println("<form method='GET'>");
-    // response.getWriter().println("<input type='submit' name='page' value='" + Integer.toString(page+1) + "' onclick='nextPage.bind(null, " + Integer.toString(page+1) + ")'/></form>");
-    
-    
-    // response.getWriter().println("<form method='POST'>");
-
-    // int numOfResultsHolder = 0;
-    // for (Entity entity : results.asIterable()) {
-    //     numOfResultsHolder++;
-    //     if (numResults > 0 && numOfResultsHolder > page*numResults)
-    //     {
-    //         numResults--;
-    //         response.getWriter().println("<div id=\"" + KeyFactory.keyToString(entity.getKey()) +"\"><br><h5>" + entity.getProperty("fname"));
-    //         response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
-    //         response.getWriter().println("<p>" + entity.getProperty("message") + "</p>");
-    //         response.getWriter().println("<input type='submit' value='Delete' onclick='deleteComment(\""+ KeyFactory.keyToString(entity.getKey()) +"\")' class='btn waves-light right-shift'></div>");
-    //     }  
-    // }
+    for (Entity entity : results.asIterable()) {
+        Comments comment = new Comments();
+        comment.fname =  (String) entity.getProperty("fname");
+        comment.lname =  (String) entity.getProperty("lname");
+        comment.message =  (String) entity.getProperty("message");
+        comment.timeStamp =  (long) entity.getProperty("timestamp");
+        comment.key = (String) KeyFactory.keyToString(entity.getKey());
+        messages.add(comment);
+    }
     String json = new Gson().toJson(messages);
     response.getWriter().println(json);
-
-    // response.getWriter().println("</form>");
-
-
-    // response.getWriter().println("<form method='GET'>");
-    // response.getWriter().println("<input type='submit' name='page' value='" + Integer.toString(page+1) + "' onclick='nextPage.bind(null, " + Integer.toString(page+1) + ")'/></form>");
-    
-    // numOfResults = numOfResultsHolder;
   }
   
   @Override
@@ -109,16 +81,17 @@ public class DataServlet extends HttpServlet {
     taskEntity.setProperty("fname", fname);
     taskEntity.setProperty("lname", lname);
     taskEntity.setProperty("timestamp", time);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(taskEntity);
     
     Comments comment = new Comments();
     comment.fname =  (String) fname;
     comment.lname =  (String) lname;
     comment.message =  (String) text;
-    comment.timeStamp =  time;
+    comment.timeStamp = time;
+    comment.key =  KeyFactory.keyToString(taskEntity.getKey());
     messages.add(comment);
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
