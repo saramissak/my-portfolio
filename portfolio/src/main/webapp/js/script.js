@@ -59,17 +59,17 @@ function getParameter(id, defaultVal) {
 
 
 function getComments() {
-    fetch('/data').then(response => response.json()).then((messages) => {
-        const comments = document.getElementById("comments");
-        comments.innerHTML = "";
+    fetch('/data').then(response => response.json()).then((comments) => {
+        const commentsSection = document.getElementById("comments");
+        commentsSection.innerHTML = "";
         console.log(document.getElementById("num-results").value);
         createChangePageButtons();
 
         var i = 0; 
         pageNum = 0;
-        messages.forEach((line) => {
+        comments.forEach((line) => {
             if(i < (document.getElementById("num-results").value))
-                comments.appendChild(createComment(line));
+                commentsSection.appendChild(createComment(line));
             i++
         });
     });
@@ -81,22 +81,22 @@ function changePage(sign) {
   } else {
       pageNum--;
   }
-  fetch('/data').then(response => response.json()).then((messages) => {
+  fetch('/data').then(response => response.json()).then((commentsSection) => {
     //  This to check if you can go more backwards or forwards so you do not get any blank pages
-    if (messages.length > pageNum*document.getElementById("num-results").value && pageNum >= 0)
+    if (commentsSection.length > pageNum*document.getElementById("num-results").value && pageNum >= 0)
     {
         createChangePageButtons();
 
-        const comments = document.getElementById("comments");
-        comments.innerHTML = "";
+        const commentsSection = document.getElementById("comments");
+        commentsSection.innerHTML = "";
 
         var resultsNum = document.getElementById("num-results").value;
         var offset = (pageNum)*resultsNum;
 
-        messages.forEach((line) => {
+        comments.forEach((line) => {
           if (resultsNum > 0 && offset <= 0)
           {
-            comments.appendChild(createComment(line));
+            commentsSection.appendChild(createComment(line));
             resultsNum--;
           }
           offset--;
@@ -116,7 +116,7 @@ function changePage(sign) {
 /** Creates an <div> element containing text. */
 function createComment(text) {
   const divElement = document.createElement("div");
-  divElement.id = 
+  divElement.id = 'comment';
   divElement.innerHTML = "<h5>" + text.fname + " " + text.lname + "</h5><p>"  + 
   "<input type='submit' value='Delete' onclick='deleteComment(\""+ text.key +"\")' class='btn waves-light right-shift'> " + text.message + "</p>";
   return divElement;
@@ -127,7 +127,7 @@ function deleteAllComments() {
   fetch(request);
 }
 
-/** Tells the server to delete the task. */
+/** Tells the server to delete the comment. */
 function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append('id', comment);

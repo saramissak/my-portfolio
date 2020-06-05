@@ -14,7 +14,7 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.data.Comments;
+import com.google.sps.data.Comment;
 import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -42,7 +42,7 @@ import java.util.Calendar;
 public class DataServlet extends HttpServlet {
 
   private int numOfResults;
-  private ArrayList<Comments> messages = new ArrayList<Comments>();
+  private ArrayList<Comment> comments = new ArrayList<Comment>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -53,18 +53,18 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    messages = new ArrayList<Comments>();
+    comments = new ArrayList<Comment>();
 
     for (Entity entity : results.asIterable()) {
-        Comments comment = new Comments();
+        Comment comment = new Comment();
         comment.fname =  (String) entity.getProperty("fname");
         comment.lname =  (String) entity.getProperty("lname");
         comment.message =  (String) entity.getProperty("message");
         comment.timeStamp =  (long) entity.getProperty("timestamp");
         comment.key = (String) KeyFactory.keyToString(entity.getKey());
-        messages.add(comment);
+        comments.add(comment);
     }
-    String json = new Gson().toJson(messages);
+    String json = new Gson().toJson(comments);
     response.getWriter().println(json);
   }
   
@@ -85,13 +85,13 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
     
-    Comments comment = new Comments();
+    Comment comment = new Comment();
     comment.fname =  (String) fname;
     comment.lname =  (String) lname;
     comment.message =  (String) text;
     comment.timeStamp = time;
     comment.key =  KeyFactory.keyToString(taskEntity.getKey());
-    messages.add(comment);
+    comments.add(comment);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
