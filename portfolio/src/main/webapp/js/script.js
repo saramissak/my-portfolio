@@ -44,6 +44,8 @@ function validatePhoneNumber() {
   }
 }
 
+
+// gets the parameter from query string
 function getParameter(id, defaultVal) {
     let tmp = (new URL(document.location)).searchParams;
     let res = tmp.get(id);
@@ -54,16 +56,30 @@ function getParameter(id, defaultVal) {
 }
 
 
-
-
 function getComments() {
-  console.log("getting phrase from /data");
+//   console.log("getting phrase from /data");
 
-  const responsePromise = fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + getParameter("page", "0"));
+//   const responsePromise = fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + getParameter("page", "0"));
 
-  // When the request is complete, pass the response into handleResponse().
-  responsePromise.then(handleResponse);
+//   // When the request is complete, pass the response into handleResponse().
+//   responsePromise.then(handleResponse);
+
+    fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + getParameter("page", "0")).then(response => response.json()).then((messages) => {
+        const comments = document.getElementById("comments");
+
+        messages.forEach((line) => {
+            comments.appendChild(createComment(line));
+        });
+    });
 }
+
+/** Creates an <li> element containing text. */
+function createComment(text) {
+  const divElement = document.createElement("div");
+  divElement.innerHTML = "<h5>" + text.fname + " " + text.lname + "</h5><p>" + text.message + "</p>";
+  return divElement;
+}
+
 
 function handleResponse(response) {
   console.log('Handling the response.');
@@ -101,7 +117,7 @@ function deleteComment(comment) {
 
 function nextPage(page) {
   const responsePromise = fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + page);
-
+    console.log(responsePromise);
   // When the request is complete, pass the response into handleResponse().
   responsePromise.then(handleResponse);
 }

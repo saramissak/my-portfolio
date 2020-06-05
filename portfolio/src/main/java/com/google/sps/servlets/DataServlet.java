@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.Comments;
 import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -41,49 +42,58 @@ import java.util.Calendar;
 public class DataServlet extends HttpServlet {
 
   private int numOfResults;
+  private ArrayList<Comments> messages = new ArrayList<Comments>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
+    
 
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    String numResultsString = request.getParameter("num-results");
-    int numResults = 10;
-    if (numResultsString != null) {
-        numResults = Integer.parseInt(numResultsString);
-    } 
 
-    String pageString = request.getParameter("page");
-    int page = 0;
-    if (pageString != null) {
-        response.getWriter().println("entered");
-        page = Integer.parseInt(pageString);
-    }
+    // String numResultsString = request.getParameter("num-results");
+    // int numResults = 10;
+    // if (numResultsString != null) {
+    //     numResults = Integer.parseInt(numResultsString);
+    // } 
 
-    response.getWriter().println("<form method='GET'>");
-    response.getWriter().println("<input type='submit' name='page' value='Next Page' onclick='nextPage(" + Integer.toString(page+1) + ")'/></form>");
-    response.getWriter().println(Integer.toString(page+1));
+    // String pageString = request.getParameter("page");
+    // int page = 0;
+    // if (pageString != null) {
+    //     page = Integer.parseInt(pageString);
+    // }
 
-    int numOfResultsHolder = 0;
-    for (Entity entity : results.asIterable()) {
-        numOfResultsHolder++;
-        if (numResults > 0 && numOfResultsHolder > page*numResults)
-        {
-            numResults--;
-            response.getWriter().println("<div id=\"" + KeyFactory.keyToString(entity.getKey()) +"\"><br><h5>" + entity.getProperty("fname"));
-            response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
-            response.getWriter().println("<p>" + entity.getProperty("message") + "</p>");
-            response.getWriter().println("<input type='submit' value='Delete' onclick='deleteComment(\""+ KeyFactory.keyToString(entity.getKey()) +"\")' class='btn waves-light right-shift'></div>");
-        }
-        
-    }
+    // response.getWriter().println("<form method='GET'>");
+    // response.getWriter().println("<input type='submit' name='page' value='" + Integer.toString(page+1) + "' onclick='nextPage.bind(null, " + Integer.toString(page+1) + ")'/></form>");
+    
+    
+    // response.getWriter().println("<form method='POST'>");
 
-    // response.getWriter().println("<form method='GET'><input type='submit' id='page' value='Next Page' onclick='nextPage(" + (page+1) + ")'/></form>");
+    // int numOfResultsHolder = 0;
+    // for (Entity entity : results.asIterable()) {
+    //     numOfResultsHolder++;
+    //     if (numResults > 0 && numOfResultsHolder > page*numResults)
+    //     {
+    //         numResults--;
+    //         response.getWriter().println("<div id=\"" + KeyFactory.keyToString(entity.getKey()) +"\"><br><h5>" + entity.getProperty("fname"));
+    //         response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
+    //         response.getWriter().println("<p>" + entity.getProperty("message") + "</p>");
+    //         response.getWriter().println("<input type='submit' value='Delete' onclick='deleteComment(\""+ KeyFactory.keyToString(entity.getKey()) +"\")' class='btn waves-light right-shift'></div>");
+    //     }  
+    // }
+    String json = new Gson().toJson(messages);
+    response.getWriter().println(json);
 
-    numOfResults = numOfResultsHolder;
+    // response.getWriter().println("</form>");
+
+
+    // response.getWriter().println("<form method='GET'>");
+    // response.getWriter().println("<input type='submit' name='page' value='" + Integer.toString(page+1) + "' onclick='nextPage.bind(null, " + Integer.toString(page+1) + ")'/></form>");
+    
+    // numOfResults = numOfResultsHolder;
   }
   
   @Override
@@ -99,6 +109,13 @@ public class DataServlet extends HttpServlet {
     taskEntity.setProperty("fname", fname);
     taskEntity.setProperty("lname", lname);
     taskEntity.setProperty("timestamp", time);
+    
+    Comments comment = new Comments();
+    comment.fname =  (String) fname;
+    comment.lname =  (String) lname;
+    comment.message =  (String) text;
+    comment.timeStamp =  time;
+    messages.add(comment);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
