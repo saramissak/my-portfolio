@@ -201,14 +201,13 @@
 
           <form method="GET">
             <label for="num-results">Choose the number of results you would like to be shown:</label>
-            <select name="num-results" id="num-results">
+            <select name="num-results" id="num-results" onchange="getComments()" >
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="30">30</option>
               <option value="40">40</option>
             </select>
             <br/>
-            <input type="submit" value="Change" onclick="getComments()" class="btn waves-light"/>
           </form>
 
           <br/><br/><br/>

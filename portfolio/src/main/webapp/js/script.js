@@ -59,14 +59,16 @@ function getParameter(id, defaultVal) {
 
 
 function getComments() {
-    fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=0").then(response => response.json()).then((messages) => {
+    fetch('/data').then(response => response.json()).then((messages) => {
         const comments = document.getElementById("comments");
+        comments.innerHTML = "";
+        console.log(document.getElementById("num-results").value);
         createChangePageButtons();
 
         var i = 0; 
         pageNum = 0;
         messages.forEach((line) => {
-            if(i < parseInt(getParameter('num-results', "10")))
+            if(i < (document.getElementById("num-results").value))
                 comments.appendChild(createComment(line));
             i++
         });
@@ -79,16 +81,16 @@ function changePage(sign) {
   } else {
       pageNum--;
   }
-  fetch('/data?num-results=' + getParameter('num-results', "10") + "&page=" + pageNum).then(response => response.json()).then((messages) => {
+  fetch('/data').then(response => response.json()).then((messages) => {
     //  This to check if you can go more backwards or forwards so you do not get any blank pages
-    if (messages.length > pageNum*parseInt(getParameter('num-results', "10")) && pageNum >= 0)
+    if (messages.length > pageNum*document.getElementById("num-results").value && pageNum >= 0)
     {
         createChangePageButtons();
 
         const comments = document.getElementById("comments");
         comments.innerHTML = "";
 
-        var resultsNum = parseInt(getParameter('num-results', "10"));
+        var resultsNum = document.getElementById("num-results").value;
         var offset = (pageNum)*resultsNum;
 
         messages.forEach((line) => {
