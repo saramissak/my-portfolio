@@ -69,7 +69,7 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(offset + numResults));
 
-    if (0 < offset+numResults && offset < entities.size())
+    if (entities.size() == 0 || 0 < offset+numResults && offset < entities.size())
     {
       comments = new ArrayList<Comment>();
     }

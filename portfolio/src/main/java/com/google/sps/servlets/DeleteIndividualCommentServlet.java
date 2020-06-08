@@ -29,7 +29,5 @@ public class DeleteIndividualCommentServlet extends HttpServlet {
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.delete(id);
-
-    response.sendRedirect("/index.html");
   }
 }

@@ -112,7 +112,7 @@ function changePage(sign) {
 function createComment(text) {
   const divElement = document.createElement("div");
   divElement.id = 'comment';
-  divElement.innerHTML = "<h5><input type='submit' value='x' onclick='deleteComment(\""+ text.key +"\")' class='right-shift'> "  + text.fname + " " + text.lname + "</h5><p>"  + 
+  divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5><p>"  + 
    text.message + "</p><br/><br/>";
   return divElement;
 }
@@ -120,6 +120,7 @@ function createComment(text) {
 function deleteAllComments() {
   const request = new Request('/delete-data', {method: 'POST'});
   fetch(request);
+  getComments();
 }
 
 /** Tells the server to delete the comment. */
@@ -128,8 +129,6 @@ function deleteComment(comment) {
   params.append('id', comment);
   const request = new Request('/delete-comment', {method: 'POST', body: params});
   fetch(request);
-  const comments = document.getElementById("comments");
-  comments.innerHTML = "";
   getComments();
 }
 
