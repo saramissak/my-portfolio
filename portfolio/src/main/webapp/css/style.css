@@ -114,7 +114,7 @@ select {
   cursor: pointer;
 }
 
-#comment h5 {
+#comment h5, h6 {
   background-color: darkgray;
   margin: 0;
   padding: 15px;

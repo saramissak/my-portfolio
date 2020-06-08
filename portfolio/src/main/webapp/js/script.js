@@ -100,8 +100,8 @@ function changePage(sign) {
 function createComment(text) {
   const divElement = document.createElement("div");
   divElement.id = 'comment';
-  divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5><p>"  + 
-   text.message + "</p><br/><br/>";
+  divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5>"
+  divElement.innerHTML += "<h6>" + text.email + "</h6><p>"  + text.message + "</p><br/><br/>";
   return divElement;
 }
 
