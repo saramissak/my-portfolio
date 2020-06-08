@@ -102,6 +102,23 @@ nav.active {
 }
 
 select {
-    display: inline-block;
-    width: 10%;
+  display: inline-block;
+  width: 10%;
 }
+
+.right-shift {
+  float: right;
+}
+
+#comment h5 {
+  background-color: darkgray;
+  margin: 0;
+  padding: 15px;
+}
+
+#comment p {
+  background-color: lightgray;
+  margin: 0;
+  padding: 15px;
+}
+

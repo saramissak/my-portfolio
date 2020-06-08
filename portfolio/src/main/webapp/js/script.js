@@ -15,6 +15,8 @@
 /**
  * Adds a random greeting to the page.
  */
+var pageNum = 0;
+
 function addRandomFact(id) {
   const facts =
       ['My favorite color is lime green.', 'I lived my whole life in New Jersey so far. Except for when I am in college.', 
@@ -44,46 +46,97 @@ function validatePhoneNumber() {
   }
 }
 
-function getCommentLimit() {
+
+// gets the parameter from query string
+function getParameter(id, defaultVal) {
     let tmp = (new URL(document.location)).searchParams;
-    let res = tmp.get("num-results");
+    let res = tmp.get(id);
     if(!res || res.length === 0) {
-        return "10";
+        return defaultVal;
     }
     return res;
 }
 
+
 function getComments() {
-  console.log("getting phrase from /data");
+    fetch('/data?num-results=' + document.getElementById("num-results").value + '&page=0').then(response => response.json()).then((data) => {
+        const commentsSection = document.getElementById("comments");
+        commentsSection.innerHTML = "";
+        createChangePageButtons();
 
-  const responsePromise = fetch('/data?num-results=' + getCommentLimit());
-
-  // When the request is complete, pass the response into handleResponse().
-  responsePromise.then(handleResponse);
+        var i = 0; 
+        pageNum = 0;
+        data.comments.forEach((line) => {
+            if(i < (document.getElementById("num-results").value))
+                commentsSection.appendChild(createComment(line));
+            i++
+        });
+    });
 }
 
-function handleResponse(response) {
-  console.log('Handling the response.');
+function changePage(sign) {
+  if(sign.localeCompare("+") == 0){
+      pageNum++;
+  } else {
+      pageNum--;
+  }
+  fetch('/data?num-results=' + document.getElementById("num-results").value + '&page=' + pageNum).then(response => response.json()).then((data) => {
+    //  This to check if you can go more backwards or forwards so you do not get any blank pages
+    if (data.totalNumOfComments > pageNum*document.getElementById("num-results").value && pageNum >= 0)
+    {
+        createChangePageButtons();
 
-  // response.text() returns a Promise, because the response is a stream of
-  // content and not a simple variable.
-  const textPromise = response.text();
+        const commentsSection = document.getElementById("comments");
+        commentsSection.innerHTML = "";
 
-  // When the response is converted to text, pass the result into the
-  // addQuoteToDom() function.
-  textPromise.then(addQuoteToDom);
+        var resultsNum = document.getElementById("num-results").value;
+        var offset = (pageNum)*resultsNum;
+
+        data.comments.forEach((line) => {
+          commentsSection.appendChild(createComment(line));
+          resultsNum--;
+        });
+    } else { // If you cannot go any more forward or backward reverse the change of page count
+        if(sign.localeCompare("+") == 0){
+           pageNum--;
+        } else {
+           pageNum++;
+        }
+    }
+  });
 }
 
-/** Adds a random quote to the DOM. */
-function addQuoteToDom(quote) {
-  console.log('Adding quote to dom: ' + quote);
 
-  const quoteContainer = document.getElementById('comments');
-  quoteContainer.innerHTML = quote;
+
+/** Creates an <div> element containing text. */
+function createComment(text) {
+  const divElement = document.createElement("div");
+  divElement.id = 'comment';
+  divElement.innerHTML = "<h5><input type='submit' value='x' onclick='deleteComment(\""+ text.key +"\")' class='right-shift'> "  + text.fname + " " + text.lname + "</h5><p>"  + 
+   text.message + "</p><br/><br/>";
+  return divElement;
 }
 
-function deletComments() {
+function deleteAllComments() {
   const request = new Request('/delete-data', {method: 'POST'});
-  const responsePromise = fetch(request);
+  fetch(request);
+}
 
+/** Tells the server to delete the comment. */
+function deleteComment(comment) {
+  const params = new URLSearchParams();
+  params.append('id', comment);
+  const request = new Request('/delete-comment', {method: 'POST', body: params});
+  fetch(request);
+  const comments = document.getElementById("comments");
+  comments.innerHTML = "";
+  getComments();
+}
+
+function createChangePageButtons() {
+  document.getElementById("chanegPageTop").innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
+  
+  document.getElementById("chanegPageBottom").innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
 }

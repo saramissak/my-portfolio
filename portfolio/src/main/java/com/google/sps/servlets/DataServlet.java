@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.Comment;
+import com.google.sps.data.TotalComments;
+import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,64 +31,88 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Key;
+import java.text.DateFormat;  
+import java.text.SimpleDateFormat;  
+import java.util.Date;  
+import java.util.Calendar; 
+import com.google.appengine.api.datastore.FetchOptions;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+
+/** Servlet that returns some example content. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private ArrayList<String> messages = new ArrayList<String>();
-  private ArrayList<String> firstName = new ArrayList<String>();
-  private ArrayList<String> lastName = new ArrayList<String>();
+  private ArrayList<Comment> comments = new ArrayList<Comment>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
+
+    String numResultsString = request.getParameter("num-results");
+    int numResults = 10;
+    if (numResultsString != null) {
+        numResults = Integer.parseInt(numResultsString);
+    } 
+
+    String pageString = request.getParameter("page");
+    int page = 0;
+    if (pageString != null) {
+        page = Integer.parseInt(pageString);
+    }
+    
+    int offset = page*numResults;
 
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(offset + numResults));
 
-    String numResultsString = (request.getQueryString());
-    int numResults;
-    if (numResultsString == null) {
-        numResults = 1;
-    } else if (numResultsString.equals("num-results=10")) {
-        numResults = 10;
-    } else if (numResultsString.equals("num-results=20")) {
-        numResults = 20;
-    } else if (numResultsString.equals("num-results=30")) {
-        numResults = 30;
-    } else if (numResultsString.equals("num-results=40")) {
-        numResults = 40;
-    } else {
-        numResults = 1;
+    if (0 < offset+numResults && offset < entities.size())
+    {
+      comments = new ArrayList<Comment>();
     }
+    for (int i = offset; i < offset+numResults && i < entities.size() && i >= 0; i++) {
+      Comment comment = new Comment();
+      comment.fname =  (String) entities.get(i).getProperty("fname");
+      comment.lname =  (String) entities.get(i).getProperty("lname");
+      comment.message =  (String) entities.get(i).getProperty("message");
+      comment.timeStamp =  (long) entities.get(i).getProperty("timestamp");
+      comment.key = (String) KeyFactory.keyToString(entities.get(i).getKey());
+      comments.add(comment);
+    }
+    
+    TotalComments data = new TotalComments(comments, results.countEntities());
 
-    for (Entity entity : results.asIterable()) {
-        numResults--;
-        response.getWriter().println("<br> <h5>" + entity.getProperty("fname"));
-        response.getWriter().println(" " + entity.getProperty("lname") + "</h5>");
-        response.getWriter().println(entity.getProperty("message"));
-        if (numResults <= 0) break;
-    }
+    String json = new Gson().toJson(data);
+    response.getWriter().println(json);
   }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = getParameter(request, "comment", "");
     String fname = getParameter(request, "fname", "");
-    String lname = getParameter(request, "lname", "");
+    String lname = getParameter(request, "lname", ""); 
 
-    long timestamp = System.currentTimeMillis();
+    long time = System.currentTimeMillis();
 
     Entity taskEntity = new Entity("Messages");
     taskEntity.setProperty("message", text);
     taskEntity.setProperty("fname", fname);
     taskEntity.setProperty("lname", lname);
-    taskEntity.setProperty("timestamp", timestamp);
+    taskEntity.setProperty("timestamp", time);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
+    
+    Comment comment = new Comment();
+    comment.fname =  (String) fname;
+    comment.lname =  (String) lname;
+    comment.message =  (String) text;
+    comment.timeStamp = time;
+    comment.key =  KeyFactory.keyToString(taskEntity.getKey());
+    comments.add(comment);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
