@@ -6,6 +6,7 @@
     <title>About Me</title>
     
     <script src='js/script.js'></script>
+    <!-- <script src='js/login.js'></script> -->
 
 	<!--Import Google Icon Font-->
     <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
@@ -30,7 +31,7 @@
     <link rel='stylesheet' href='css/style.css'>
 
 </head>
-<body onload='addRandomFact("fact-container1"); getComments();'>
+<body onload='addRandomFact("fact-container1"); getComments(); checkLogin();'>
   <!-- Navigation Bar -->
   <nav class='white'>
     <div class='nav-wrapper container'>
@@ -184,18 +185,22 @@
           <h3><i class='mdi-content-send brown-text'></i></h3>
     	  <h4>Leave a question, comment, or message</h4>
 
-          <form action="/data" method="POST">
-            <p>First Name: </p>
-            <textarea name="fname"></textarea>
-            <br/><br/>
-            <p>Last Name: </p>
-            <textarea name="lname"></textarea>
-            <br/><br/>
-            <p>Message: </p>
-            <textarea name="comment"></textarea>
-            <br/><br/>
-            <input type="submit" class="btn waves-light"/>
-          </form>
+          <div id="hidden">
+            <form action="/data" method="POST">
+              <p>First Name: </p>
+              <textarea name="fname"></textarea>
+              <br/><br/>
+              <p>Last Name: </p>
+              <textarea name="lname"></textarea>
+              <br/><br/>
+              <p>Message: </p>
+              <textarea name="comment"></textarea>
+              <br/><br/>
+              <div id="loggedInAs"></div>
+              <input type="submit" class="btn waves-light"/>
+            </form>
+          </div>
+          <div id="login"></div>
 
           <br/><br/><br/>
 

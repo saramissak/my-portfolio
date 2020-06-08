@@ -110,6 +110,10 @@ select {
   float: right;
 }
 
+.right-shift:hover {
+  cursor: pointer;
+}
+
 #comment h5 {
   background-color: darkgray;
   margin: 0;
@@ -120,5 +124,13 @@ select {
   background-color: lightgray;
   margin: 0;
   padding: 15px;
+}
+
+#hidden {
+    display: none;
+}
+
+#show {
+    display: block;
 }
 

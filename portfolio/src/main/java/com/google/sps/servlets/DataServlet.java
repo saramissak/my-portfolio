@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Comment;
 import com.google.sps.data.TotalComments;
 import java.lang.String;
@@ -91,31 +93,41 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String text = getParameter(request, "comment", "");
-    String fname = getParameter(request, "fname", "");
-    String lname = getParameter(request, "lname", ""); 
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      String text = getParameter(request, "comment", "");
+      String fname = getParameter(request, "fname", "");
+      String lname = getParameter(request, "lname", ""); 
 
-    long time = System.currentTimeMillis();
+      long time = System.currentTimeMillis();
 
-    Entity taskEntity = new Entity("Messages");
-    taskEntity.setProperty("message", text);
-    taskEntity.setProperty("fname", fname);
-    taskEntity.setProperty("lname", lname);
-    taskEntity.setProperty("timestamp", time);
+      String userEmail = userService.getCurrentUser().getEmail();
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
+      Entity taskEntity = new Entity("Messages");
+      taskEntity.setProperty("message", text);
+      taskEntity.setProperty("fname", fname);
+      taskEntity.setProperty("lname", lname);
+      taskEntity.setProperty("timestamp", time);
+      taskEntity.setProperty("email", userEmail);
+      
+      
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(taskEntity);
     
-    Comment comment = new Comment();
-    comment.fname =  (String) fname;
-    comment.lname =  (String) lname;
-    comment.message =  (String) text;
-    comment.timeStamp = time;
-    comment.key =  KeyFactory.keyToString(taskEntity.getKey());
-    comments.add(comment);
+      Comment comment = new Comment();
+      comment.fname =  (String) fname;
+      comment.lname =  (String) lname;
+      comment.message =  (String) text;
+      comment.timeStamp = time;
+      comment.email = userEmail;
+      comment.key =  KeyFactory.keyToString(taskEntity.getKey());
+      comments.add(comment);
 
-    // Redirect back to the HTML page.
-    response.sendRedirect("/index.html");
+      // Redirect back to the HTML page.
+      response.sendRedirect("/index.html");
+    } else {
+      response.sendRedirect("/check-login");
+    }
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
