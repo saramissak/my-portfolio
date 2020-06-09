@@ -47,18 +47,18 @@ function validatePhoneNumber() {
 }
 
 function getComments() {
-    fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=0').then(response => response.json()).then((data) => {
-        const commentsSection = document.getElementById('comments');
-        commentsSection.innerHTML = '';
-        createChangePageButtons();
+  fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=0').then(response => response.json()).then((data) => {
+      const commentsSection = document.getElementById('comments');
+      commentsSection.innerHTML = '';
+      createChangePageButtons();
 
-        var i = 0; 
-        pageNum = 0;
-        data.comments.forEach((line) => {
-            if(i < (document.getElementById('num-results').value))
-                commentsSection.appendChild(createComment(line));
-            i++;
-        });
+      var i = 0; 
+      pageNum = 0;
+      data.comments.forEach((line) => {
+        //   if(i < (document.getElementById('num-results').value))
+            commentsSection.appendChild(createComment(line, data));
+        //   i++;
+      });
     });
 }
 
@@ -81,7 +81,7 @@ function changePage(sign) {
         var offset = (pageNum)*resultsNum;
 
         data.comments.forEach((line) => {
-          commentsSection.appendChild(createComment(line));
+          commentsSection.appendChild(createComment(line, data));
           resultsNum--;
         });
     } else { // If you cannot go any more forward or backward reverse the change of page count
@@ -96,26 +96,29 @@ function changePage(sign) {
 
 
 /** Creates an <div> element containing text. */
-function createComment(text) {
+function createComment(text, data) {
   const divElement = document.createElement('div');
   divElement.id = 'comment';
-  divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5>"
+  divElement.innerHTML = "<h5>" + text.fname + " " + text.lname + "</h5>";
+  if (data.email != null && (data.email).localeCompare(text.email) == 0){
+    divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5>";
+  }
   divElement.innerHTML += "<h6>" + text.email + "</h6><p>"  + text.message + "</p><br/><br/>";
   return divElement;
 }
 
-function deleteAllComments() {
+async function deleteAllComments() {
   const request = new Request('/delete-data', {method: 'POST'});
-  fetch(request);
+  await fetch(request);
   getComments();
 }
 
 /** Tells the server to delete the comment. */
-function deleteComment(comment) {
+async function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append('id', comment);
   const request = new Request('/delete-comment', {method: 'POST', body: params});
-  fetch(request);
+  await fetch(request);
   getComments();
 }
 
@@ -130,7 +133,6 @@ function createChangePageButtons() {
 function checkLogin() {
     fetch('/check-login').then(response => response.json()).then((data) => {
         const commentForm = document.getElementById('hidden');
-        console.log(data.loggedIn);
         if (data.loggedIn) {
             commentForm.id = 'show';
             const loggedInAsDiv = document.getElementById('loggedInAs');

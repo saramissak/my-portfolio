@@ -84,9 +84,13 @@ public class DataServlet extends HttpServlet {
       comment.email =  (String) entities.get(i).getProperty("email");
       comment.key = (String) KeyFactory.keyToString(entities.get(i).getKey());
       comments.add(comment);
-    }
-    
+    }    
     TotalComments data = new TotalComments(comments, results.countEntities());
+    UserService userService = UserServiceFactory.getUserService();
+
+    if (userService.isUserLoggedIn()) {
+      data.email = userService.getCurrentUser().getEmail();
+    }
 
     String json = new Gson().toJson(data);
     response.getWriter().println(json);
