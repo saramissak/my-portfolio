@@ -5,5 +5,6 @@ public class Comment {
     public String lname;
     public String message;
     public long timeStamp;
+    public String email;
     public String key;
 }

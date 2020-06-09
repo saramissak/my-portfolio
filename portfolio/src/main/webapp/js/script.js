@@ -46,18 +46,6 @@ function validatePhoneNumber() {
   }
 }
 
-
-// gets the parameter from query string
-function getParameter(id, defaultVal) {
-    let tmp = (new URL(document.location)).searchParams;
-    let res = tmp.get(id);
-    if(!res || res.length === 0) {
-        return defaultVal;
-    }
-    return res;
-}
-
-
 function getComments() {
     fetch('/data?num-results=' + document.getElementById("num-results").value + '&page=0').then(response => response.json()).then((data) => {
         const commentsSection = document.getElementById("comments");
@@ -69,7 +57,7 @@ function getComments() {
         data.comments.forEach((line) => {
             if(i < (document.getElementById("num-results").value))
                 commentsSection.appendChild(createComment(line));
-            i++
+            i++;
         });
     });
 }
@@ -112,14 +100,15 @@ function changePage(sign) {
 function createComment(text) {
   const divElement = document.createElement("div");
   divElement.id = 'comment';
-  divElement.innerHTML = "<h5><input type='submit' value='x' onclick='deleteComment(\""+ text.key +"\")' class='right-shift'> "  + text.fname + " " + text.lname + "</h5><p>"  + 
-   text.message + "</p><br/><br/>";
+  divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5>"
+  divElement.innerHTML += "<h6>" + text.email + "</h6><p>"  + text.message + "</p><br/><br/>";
   return divElement;
 }
 
 function deleteAllComments() {
   const request = new Request('/delete-data', {method: 'POST'});
   fetch(request);
+  getComments();
 }
 
 /** Tells the server to delete the comment. */
@@ -128,8 +117,6 @@ function deleteComment(comment) {
   params.append('id', comment);
   const request = new Request('/delete-comment', {method: 'POST', body: params});
   fetch(request);
-  const comments = document.getElementById("comments");
-  comments.innerHTML = "";
   getComments();
 }
 
@@ -139,4 +126,19 @@ function createChangePageButtons() {
   
   document.getElementById("chanegPageBottom").innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
   "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
+}
+
+function checkLogin() {
+    fetch('/check-login').then(response => response.json()).then((data) => {
+        const commentForm = document.getElementById("hidden");
+        console.log(data.loggedIn);
+        if (data.loggedIn) {
+            commentForm.id = "show";
+            const loggedInAsDiv = document.getElementById("loggedInAs");
+            loggedInAsDiv.innerHTML = "<p>You are logged in as " + data.email + ". Logout <a href=\"" + data.logoutURL + "\">here</a>.</p>";
+        } else {
+            const loginDiv = document.getElementById("login");
+            loginDiv.innerHTML = "<p>You are not logged in to leave a comment. Login <a href=\"" + data.loginURL + "\">here</a>.</p>"
+        }
+    });
 }
