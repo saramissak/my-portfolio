@@ -6,7 +6,7 @@
     <title>About Me</title>
     
     <script src='js/script.js'></script>
-    <!-- <script src='js/login.js'></script> -->
+    <script src='js/map.js'></script>
 
 	<!--Import Google Icon Font-->
     <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
@@ -17,9 +17,6 @@
     <!--Let browser know website is optimized for mobile-->
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     
-    <!-- Compiled and minified CSS from materalizecss.com-->
-    <!-- <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css'> -->
-
     <!-- Compiled and minified JavaScript from materalizecss.com-->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js'></script>
 
@@ -30,8 +27,10 @@
 
     <link rel='stylesheet' href='css/style.css'>
 
+  <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB6Z9-Fs5ZPU67bQl5Wehpzw81FQUODf-U'></script>
+
 </head>
-<body onload='addRandomFact("fact-container1"); getComments(); checkLogin();'>
+<body onload='addRandomFact("fact-container1"); getComments(); checkLogin(); createMap();'>
   <!-- Navigation Bar -->
   <nav class='white'>
     <div class='nav-wrapper container'>
@@ -43,12 +42,12 @@
       </ul>
 
       <!-- For mobile use, edits -->
-      <ul id="nav-mobile" class="sidenav">
+      <ul id='nav-mobile' class='sidenav'>
         <li><a class='active' href='index.html'>About Me</a></li>
         <li><a href='projects.html'>My Projects</a></li>
         <li><a href='contact.html'>Contact Me</a></li>
       </ul>
-      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <a href='#' data-target='nav-mobile' class='sidenav-trigger'><i class='material-icons'>menu</i></a>
     </div>
   </nav>
 
@@ -165,6 +164,35 @@
     </div>
   </div>
 
+    <!-- Map header container -->
+  <div class='parallax-container valign-wrapper'>
+    <div class='section no-pad-bot'>
+      <div class='container'>
+        <div class='row center'>
+          <h5 class='header col s12 light outline-text' id='bolded'>Favorite Places In The U.S.</h5>
+        </div>
+      </div>
+    </div>
+    <div class='parallax'><img src='images/bubbleTea.jpg' alt='Sun setting at a track field'></div>
+  </div>
+
+  <!-- Map of favorite places container -->
+  <div class='container'>
+    <div class='section'>
+      <div class='row'>
+           <h3><i class='mdi-content-send brown-text'></i></h3>
+          <h4 class='center'>Click the button to see Sara's next favorite place!</h4>
+          <div class='center'>
+            <input type='button' value='Next place!' onclick='changeZoom()'/>
+
+            <br/><br/>
+
+          </div>
+    	  <div id='map'></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Comments header container -->
   <div class='parallax-container valign-wrapper'>
     <div class='section no-pad-bot'>
@@ -185,40 +213,40 @@
           <h3><i class='mdi-content-send brown-text'></i></h3>
     	  <h4>Leave a question, comment, or message</h4>
 
-          <div id="hidden">
-            <form action="/data" method="POST">
+          <div id='hidden'>
+            <form action='/data' method='POST'>
               <p>First Name: </p>
-              <textarea name="fname"></textarea>
+              <textarea name='fname'></textarea>
               <br/><br/>
               <p>Last Name: </p>
-              <textarea name="lname"></textarea>
+              <textarea name='lname'></textarea>
               <br/><br/>
               <p>Message: </p>
-              <textarea name="comment"></textarea>
+              <textarea name='comment'></textarea>
               <br/><br/>
-              <div id="loggedInAs"></div>
-              <input type="submit" class="btn waves-light"/>
+              <div id='loggedInAs'></div>
+              <input type='submit' class='btn waves-light'/>
             </form>
           </div>
-          <div id="login"></div>
+          <div id='login'></div>
 
           <br/><br/><br/>
 
-          <form method="GET">
-            <label for="num-results">Choose the number of results you would like to be shown:</label>
-            <select name="num-results" id="num-results" onchange="getComments()" >
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-              <option value="40">40</option>
+          <form method='GET'>
+            <label for='num-results'>Choose the number of results you would like to be shown:</label>
+            <select name='num-results' id='num-results' onchange='getComments()' >
+              <option value='10'>10</option>
+              <option value='20'>20</option>
+              <option value='30'>30</option>
+              <option value='40'>40</option>
             </select>
             <br/>
           </form>
 
           <br/><br/><br/>
 
-          <form method="POST">
-            <input type="submit" value="Delete All Comments" onclick="deleteAllComments()" class="btn waves-light"/>
+          <form method='POST'>
+            <input type='submit' value='Delete All Comments' onclick='deleteAllComments()' class='btn waves-light'/>
           </form>
           
           <div id='chanegPageTop'></div>
@@ -231,7 +259,6 @@
       </div>
     </div>
   </div>
-
 
   <footer class='page-footer teal'>
     <div class='container'>

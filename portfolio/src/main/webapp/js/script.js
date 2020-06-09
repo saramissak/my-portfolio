@@ -34,7 +34,7 @@ function addRandomFact(id) {
 }
 
 function validatePhoneNumber() {
-  var phone = $("#telephone").val();
+  var phone = $('#telephone').val();
   var phoneNum = /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g;
   if(phone.match(phoneNum)) {
     document.getElementById('invalid').innerHTML = "<p style='color:gray'> Phone Number</p>";
@@ -47,15 +47,15 @@ function validatePhoneNumber() {
 }
 
 function getComments() {
-    fetch('/data?num-results=' + document.getElementById("num-results").value + '&page=0').then(response => response.json()).then((data) => {
-        const commentsSection = document.getElementById("comments");
-        commentsSection.innerHTML = "";
+    fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=0').then(response => response.json()).then((data) => {
+        const commentsSection = document.getElementById('comments');
+        commentsSection.innerHTML = '';
         createChangePageButtons();
 
         var i = 0; 
         pageNum = 0;
         data.comments.forEach((line) => {
-            if(i < (document.getElementById("num-results").value))
+            if(i < (document.getElementById('num-results').value))
                 commentsSection.appendChild(createComment(line));
             i++;
         });
@@ -63,21 +63,21 @@ function getComments() {
 }
 
 function changePage(sign) {
-  if(sign.localeCompare("+") == 0){
+  if(sign.localeCompare('+') == 0){
       pageNum++;
   } else {
       pageNum--;
   }
-  fetch('/data?num-results=' + document.getElementById("num-results").value + '&page=' + pageNum).then(response => response.json()).then((data) => {
+  fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=' + pageNum).then(response => response.json()).then((data) => {
     //  This to check if you can go more backwards or forwards so you do not get any blank pages
-    if (data.totalNumOfComments > pageNum*document.getElementById("num-results").value && pageNum >= 0)
+    if (data.totalNumOfComments > pageNum*document.getElementById('num-results').value && pageNum >= 0)
     {
         createChangePageButtons();
 
-        const commentsSection = document.getElementById("comments");
-        commentsSection.innerHTML = "";
+        const commentsSection = document.getElementById('comments');
+        commentsSection.innerHTML = '';
 
-        var resultsNum = document.getElementById("num-results").value;
+        var resultsNum = document.getElementById('num-results').value;
         var offset = (pageNum)*resultsNum;
 
         data.comments.forEach((line) => {
@@ -85,7 +85,7 @@ function changePage(sign) {
           resultsNum--;
         });
     } else { // If you cannot go any more forward or backward reverse the change of page count
-        if(sign.localeCompare("+") == 0){
+        if(sign.localeCompare('+') == 0){
            pageNum--;
         } else {
            pageNum++;
@@ -95,10 +95,9 @@ function changePage(sign) {
 }
 
 
-
 /** Creates an <div> element containing text. */
 function createComment(text) {
-  const divElement = document.createElement("div");
+  const divElement = document.createElement('div');
   divElement.id = 'comment';
   divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5>"
   divElement.innerHTML += "<h6>" + text.email + "</h6><p>"  + text.message + "</p><br/><br/>";
@@ -121,24 +120,24 @@ function deleteComment(comment) {
 }
 
 function createChangePageButtons() {
-  document.getElementById("chanegPageTop").innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  document.getElementById('chanegPageTop').innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
   "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
   
-  document.getElementById("chanegPageBottom").innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  document.getElementById('chanegPageBottom').innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
   "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
 }
 
 function checkLogin() {
     fetch('/check-login').then(response => response.json()).then((data) => {
-        const commentForm = document.getElementById("hidden");
+        const commentForm = document.getElementById('hidden');
         console.log(data.loggedIn);
         if (data.loggedIn) {
-            commentForm.id = "show";
-            const loggedInAsDiv = document.getElementById("loggedInAs");
-            loggedInAsDiv.innerHTML = "<p>You are logged in as " + data.email + ". Logout <a href=\"" + data.logoutURL + "\">here</a>.</p>";
+            commentForm.id = 'show';
+            const loggedInAsDiv = document.getElementById('loggedInAs');
+            loggedInAsDiv.innerHTML = '<p>You are logged in as ' + data.email + '. Logout <a href=\'' + data.logoutURL + '\'>here</a>.</p>';
         } else {
-            const loginDiv = document.getElementById("login");
-            loginDiv.innerHTML = "<p>You are not logged in to leave a comment. Login <a href=\"" + data.loginURL + "\">here</a>.</p>"
+            const loginDiv = document.getElementById('login');
+            loginDiv.innerHTML = '<p>You are not logged in to leave a comment. Login <a href=\'' + data.loginURL + '\'>here</a>.</p>'
         }
     });
 }

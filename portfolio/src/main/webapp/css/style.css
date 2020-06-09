@@ -134,3 +134,10 @@ select {
     display: block;
 }
 
+
+#map {
+  border: thin solid black;
+  height: 500px;
+  width: 100%;
+}
+
