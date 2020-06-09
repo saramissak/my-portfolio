@@ -120,11 +120,11 @@ function deleteComment(comment) {
 }
 
 function createChangePageButtons() {
-  document.getElementById('chanegPageTop').innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
-  "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
+  document.getElementById('chanegPageTop').innerHTML = "<form='GET'><input type='submit' name='page'  class='btn waves-light left-shift' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page' class='btn waves-light right-shift' value='Next Page' onclick='changePage(\"+\")'/></form> <br/></br><br/>";
   
-  document.getElementById('chanegPageBottom').innerHTML = "<form='GET'><input type='submit' name='page' value='Previous Page' onclick='changePage(\"-\")'/>" + 
-  "<input type='submit' name='page' value='Next Page' onclick='changePage(\"+\")'/></form>";
+  document.getElementById('chanegPageBottom').innerHTML = "<form='GET'><input type='submit' name='page'  class='btn waves-light left-shift' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page'  class='btn waves-light right-shift' value='Next Page' onclick='changePage(\"+\")'/></form>";
 }
 
 function checkLogin() {

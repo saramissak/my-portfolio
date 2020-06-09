@@ -123,12 +123,9 @@ public class DataServlet extends HttpServlet {
       comment.email = userEmail;
       comment.key =  KeyFactory.keyToString(taskEntity.getKey());
       comments.add(comment);
-
-      // Redirect back to the HTML page.
-      response.sendRedirect("/index.html");
-    } else {
-      response.sendRedirect("/check-login");
     }
+    // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {

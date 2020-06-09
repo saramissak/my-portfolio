@@ -110,6 +110,11 @@ select {
   float: right;
 }
 
+
+.left-shift {
+  float: left;
+}
+
 .right-shift:hover {
   cursor: pointer;
 }
