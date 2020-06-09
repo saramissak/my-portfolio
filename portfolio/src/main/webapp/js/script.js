@@ -143,3 +143,10 @@ function checkLogin() {
         }
     });
 }
+
+function onLoadFunctions() {
+  addRandomFact("fact-container1"); 
+  getComments(); 
+  checkLogin();
+  createMap();
+}
