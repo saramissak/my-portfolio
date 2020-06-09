@@ -6,8 +6,9 @@ function createMap() {
   var bobaLatlng = {lat: 40.5192552, lng: -74.39717};
   var CMULatlng = {lat: 40.44273393240576, lng: -79.94296073913574};
   var holmdelParkLatlng = {lat: 40.3704118, lng: -74.1865324};
+  var lombardiLatlng = {lat: 40.3965513, lng: -74.305296};
 
-  var latlangs = [bobaLatlng, CMULatlng, holmdelParkLatlng];
+  var latlangs = [bobaLatlng, CMULatlng, holmdelParkLatlng, lombardiLatlng];
 
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 18,
@@ -54,6 +55,17 @@ function createMap() {
       '</div>'+
       '</div>';
   makeMarker(map, holmdelParkLatlng, holmdelParkContentString, 'Holmdel Park')
+
+  var lombardiContentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Lombardi Field</h1>'+
+      '<div id="bodyContent">'+
+      '<p>Lombardi Field is the football field and the track field for my high school. This is the place I did track at throughout high school and 8th grade. ' +
+      'This is a great place to go to relax and get your mind off of school work.</p>'+
+      '</div>'+
+      '</div>';
+  makeMarker(map, lombardiLatlng, lombardiContentString, 'Lombardi Field')
 }
 
 // Given the arguments, creates a marker on the given map
@@ -76,9 +88,10 @@ function changeZoom() {
   var bobaLatlng = {lat: 40.5192552, lng: -74.39717};
   var CMULatlng = {lat: 40.44273393240576, lng: -79.94296073913574};
   var holmdelParkLatlng = {lat: 40.3704118, lng: -74.1865324};
+  var lombardiLatlng = {lat: 40.3965513, lng: -74.305296};
 
-  var latlangs = [bobaLatlng, CMULatlng, holmdelParkLatlng];
+  var latlangs = [bobaLatlng, CMULatlng, holmdelParkLatlng, lombardiLatlng];
+
   pos = (pos + 1) % latlangs.length;
-  map.panTo(new google.maps.LatLng(latlangs[pos]));
-    
+  map.panTo(new google.maps.LatLng(latlangs[pos]));  
 }

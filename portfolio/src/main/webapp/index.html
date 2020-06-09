@@ -216,16 +216,16 @@
           <div id='hidden'>
             <form action='/data' method='POST'>
               <p>First Name: </p>
-              <textarea name='fname'></textarea>
+              <textarea name='fname' id='fname'></textarea>
               <br/><br/>
               <p>Last Name: </p>
-              <textarea name='lname'></textarea>
+              <textarea name='lname' id='lname'></textarea>
               <br/><br/>
               <p>Message: </p>
-              <textarea name='comment'></textarea>
+              <textarea name='comment' id='commentInput'></textarea>
               <br/><br/>
               <div id='loggedInAs'></div>
-              <input type='submit' class='btn waves-light'/>
+              <input type='button' value='Submit' onclick='submitComment()' class='btn waves-light'/>
             </form>
           </div>
           <div id='login'></div>

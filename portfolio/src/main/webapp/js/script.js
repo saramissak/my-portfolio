@@ -46,6 +46,19 @@ function validatePhoneNumber() {
   }
 }
 
+async function submitComment() {
+  const params = new URLSearchParams();
+  params.append('fname', document.getElementById('fname').value);
+  params.append('lname', document.getElementById('lname').value);
+  params.append('comment', document.getElementById('commentInput').value);
+  document.getElementById('fname').value = '';
+  document.getElementById('lname').value = '';
+  document.getElementById('commentInput').value = '';
+  const request = new Request('/data', {method: 'POST', body: params});
+  await fetch(request);
+  getComments();
+}
+
 function getComments() {
   fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=0').then(response => response.json()).then((data) => {
       const commentsSection = document.getElementById('comments');
@@ -93,7 +106,6 @@ function changePage(sign) {
     }
   });
 }
-
 
 /** Creates an <div> element containing text. */
 function createComment(text, data) {
