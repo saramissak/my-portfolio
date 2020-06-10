@@ -47,7 +47,7 @@ function validatePhoneNumber() {
 }
 
 async function submitComment() {
-  newChart();
+  newChart("false");
   const params = new URLSearchParams();
   params.append('fname', document.getElementById('fname').value);
   params.append('lname', document.getElementById('lname').value);
@@ -131,6 +131,7 @@ async function deleteComment(comment) {
   const request = new Request('/delete-comment', {method: 'POST', body: params});
   await fetch(request);
   getComments();
+  newChart("true");
 }
 
 function createChangePageButtons() {
@@ -162,5 +163,4 @@ function onLoadFunctions() {
   checkLogin();
   createMap();
   drawChart();
-
 }

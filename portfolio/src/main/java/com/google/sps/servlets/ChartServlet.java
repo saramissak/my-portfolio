@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.String;
 
 
 @WebServlet("/chart-data")
@@ -27,10 +28,15 @@ public class ChartServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String email = request.getParameter("email");
-    if (email != null)
-    {
+    Boolean deleted = Boolean.parseBoolean(request.getParameter("deleted"));
+    if (email != null && !deleted) {
       int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
       popularCommenters.put(email, currentVotes + 1);
+    } else if (email != null && deleted) {
+      int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
+      if (currentVotes != 0) {
+        popularCommenters.put(email, currentVotes - 1);
+      }
     }
   }
 }
