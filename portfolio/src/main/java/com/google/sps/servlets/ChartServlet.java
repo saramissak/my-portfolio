@@ -35,7 +35,7 @@ public class ChartServlet extends HttpServlet {
       if (email != null && !deleted) {
         int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
         popularCommenters.put(email, currentVotes + 1);
-      } else if (email != null && deleted) {
+      } else if (email != null && deleted) { // This is the case where the comment is deleted not submitted
         int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
         if (currentVotes != 0) {
           popularCommenters.put(email, currentVotes - 1);
