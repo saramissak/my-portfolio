@@ -110,6 +110,11 @@ select {
   float: right;
 }
 
+
+.left-shift {
+  float: left;
+}
+
 .right-shift:hover {
   cursor: pointer;
 }
@@ -132,5 +137,12 @@ select {
 
 #show {
     display: block;
+}
+
+
+#map {
+  border: thin solid black;
+  height: 500px;
+  width: 100%;
 }
 

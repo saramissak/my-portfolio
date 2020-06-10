@@ -51,7 +51,6 @@ public class CommentFormCheckLogin extends HttpServlet {
       data.loginURL = loginUrl;
     }
 
-    
     String json = new Gson().toJson(data);
     response.getWriter().println(json);
   }
