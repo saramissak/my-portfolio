@@ -157,10 +157,21 @@ function checkLogin() {
     });
 }
 
+function checkLoginForDeleteAllBtn() {
+    fetch('/check-login').then(response => response.json()).then((data) => {
+    const commentsSection = document.getElementById('deleteAll');
+    if ((data.email).localeCompare("sarammissak@gmail.com") == 0 || (data.email).localeCompare("smissak@google.com") == 0)
+    {
+        commentsSection.id = 'deleteAllShow';
+    }
+  });
+}
+
 function onLoadFunctions() {
   addRandomFact("fact-container1"); 
   getComments(); 
   checkLogin();
   createMap();
   drawChart();
+  checkLoginForDeleteAllBtn();
 }

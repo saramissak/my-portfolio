@@ -13,13 +13,16 @@ async function drawChart() {
     });
 
     const options = {
-      'title': 'Most Commented',
-      'width':600,
-      'height':500
+      title: 'Number of comments per user',
+      width: '150%',
+      height: 500,
+      hAxis: {
+          title: 'User Email',
+      },
+      colors: ['teal']
     };
 
-    const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));
+    const chart = new google.visualization.ColumnChart(document.getElementById('chart-container'));
     chart.draw(data, options);
   });
 }
