@@ -47,7 +47,7 @@ function validatePhoneNumber() {
 }
 
 async function submitComment() {
-  drawChart();
+  newChart();
   const params = new URLSearchParams();
   params.append('fname', document.getElementById('fname').value);
   params.append('lname', document.getElementById('lname').value);
@@ -147,7 +147,7 @@ function checkLogin() {
         if (data.loggedIn) {
             commentForm.id = 'show';
             const loggedInAsDiv = document.getElementById('loggedInAs');
-            loggedInAsDiv.innerHTML = '<p id="submitted-email">You are logged in as ' + data.email + '. Logout <a href=\'' + data.logoutURL + '\'>here</a>.</p>';
+            loggedInAsDiv.innerHTML = '<p>You are logged in as ' + data.email + '. Logout <a href=\'' + data.logoutURL + '\'>here</a>.</p>';
             loggedInAsDiv.innerHTML += '<div id="hidden"><input id="submitted-email" value="'+ data.email +'" name="'+ data.email +'"></div>'
         } else {
             const loginDiv = document.getElementById('login');
