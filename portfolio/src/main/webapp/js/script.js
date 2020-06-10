@@ -121,6 +121,7 @@ function createComment(text, data) {
 async function deleteAllComments() {
   const request = new Request('/delete-data', {method: 'POST'});
   await fetch(request);
+  newChart(null);
   getComments();
 }
 

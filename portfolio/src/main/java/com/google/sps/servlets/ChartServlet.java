@@ -26,16 +26,20 @@ public class ChartServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String email = request.getParameter("email");
-    Boolean deleted = Boolean.parseBoolean(request.getParameter("deleted"));
-    if (email != null && !deleted) {
-      int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
-      popularCommenters.put(email, currentVotes + 1);
-    } else if (email != null && deleted) {
-      int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
-      if (currentVotes != 0) {
-        popularCommenters.put(email, currentVotes - 1);
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {  
+    if (("null").equals(request.getParameter("deleted"))) {
+        popularCommenters.clear();
+    } else {
+      String email = request.getParameter("email");
+      Boolean deleted = Boolean.parseBoolean(request.getParameter("deleted"));
+      if (email != null && !deleted) {
+        int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
+        popularCommenters.put(email, currentVotes + 1);
+      } else if (email != null && deleted) {
+        int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
+        if (currentVotes != 0) {
+          popularCommenters.put(email, currentVotes - 1);
+        }
       }
     }
   }

@@ -3,8 +3,7 @@ google.charts.setOnLoadCallback(drawChart);
 
 /** Fetches data and uses it to create a chart. */
 async function drawChart() {
-  fetch('/chart-data').then(response => response.json())
-  .then((commentsSubmitted) => {
+  fetch('/chart-data').then(response => response.json()).then((commentsSubmitted) => {
     const data = new google.visualization.DataTable();
     data.addColumn('string', 'Email');
     data.addColumn('number', 'Comments');
