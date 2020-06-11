@@ -15,7 +15,7 @@ import java.lang.String;
 @WebServlet("/chart-data")
 public class ChartServlet extends HttpServlet {
 
-  private Map<String, Integer> popularCommenters = new HashMap<>();
+  private final Map<String, Integer> popularCommenters = new HashMap<>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
