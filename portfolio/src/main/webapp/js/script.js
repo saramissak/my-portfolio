@@ -47,6 +47,7 @@ function validatePhoneNumber() {
 }
 
 async function submitComment() {
+  newChart("false");
   const params = new URLSearchParams();
   params.append('fname', document.getElementById('fname').value);
   params.append('lname', document.getElementById('lname').value);
@@ -61,18 +62,16 @@ async function submitComment() {
 
 function getComments() {
   fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=0').then(response => response.json()).then((data) => {
-      const commentsSection = document.getElementById('comments');
-      commentsSection.innerHTML = '';
-      createChangePageButtons();
+    const commentsSection = document.getElementById('comments');
+    commentsSection.innerHTML = '';
+    createChangePageButtons();
 
-      var i = 0; 
-      pageNum = 0;
-      data.comments.forEach((line) => {
-        //   if(i < (document.getElementById('num-results').value))
-            commentsSection.appendChild(createComment(line, data));
-        //   i++;
-      });
+    var i = 0; 
+    pageNum = 0;
+    data.comments.forEach((line) => {
+      commentsSection.appendChild(createComment(line, data));
     });
+  });
 }
 
 function changePage(sign) {
@@ -122,6 +121,7 @@ function createComment(text, data) {
 async function deleteAllComments() {
   const request = new Request('/delete-data', {method: 'POST'});
   await fetch(request);
+  newChart(null);
   getComments();
 }
 
@@ -132,6 +132,7 @@ async function deleteComment(comment) {
   const request = new Request('/delete-comment', {method: 'POST', body: params});
   await fetch(request);
   getComments();
+  newChart("true");
 }
 
 function createChangePageButtons() {
@@ -149,6 +150,7 @@ function checkLogin() {
             commentForm.id = 'show';
             const loggedInAsDiv = document.getElementById('loggedInAs');
             loggedInAsDiv.innerHTML = '<p>You are logged in as ' + data.email + '. Logout <a href=\'' + data.logoutURL + '\'>here</a>.</p>';
+            loggedInAsDiv.innerHTML += '<div id="hidden"><input id="submitted-email" value="'+ data.email +'" name="'+ data.email +'"></div>'
         } else {
             const loginDiv = document.getElementById('login');
             loginDiv.innerHTML = '<p>You are not logged in to leave a comment. Login <a href=\'' + data.loginURL + '\'>here</a>.</p>'
@@ -156,9 +158,21 @@ function checkLogin() {
     });
 }
 
+function checkLoginForDeleteAllButton() {
+    fetch('/check-login').then(response => response.json()).then((data) => {
+    const commentsSection = document.getElementById('deleteAll');
+    if ((data.email).localeCompare("sarammissak@gmail.com") == 0 || (data.email).localeCompare("smissak@google.com") == 0)
+    {
+        commentsSection.id = 'deleteAllShow';
+    }
+  });
+}
+
 function onLoadFunctions() {
   addRandomFact("fact-container1"); 
   getComments(); 
   checkLogin();
   createMap();
+  drawChart();
+  checkLoginForDeleteAllButton();
 }
