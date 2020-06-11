@@ -158,7 +158,7 @@ function checkLogin() {
     });
 }
 
-function checkLoginForDeleteAllBtn() {
+function checkLoginForDeleteAllButton() {
     fetch('/check-login').then(response => response.json()).then((data) => {
     const commentsSection = document.getElementById('deleteAll');
     if ((data.email).localeCompare("sarammissak@gmail.com") == 0 || (data.email).localeCompare("smissak@google.com") == 0)
@@ -174,5 +174,5 @@ function onLoadFunctions() {
   checkLogin();
   createMap();
   drawChart();
-  checkLoginForDeleteAllBtn();
+  checkLoginForDeleteAllButton();
 }
