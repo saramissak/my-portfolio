@@ -47,16 +47,15 @@ function validatePhoneNumber() {
 }
 
 async function submitComment() {
-  newChart("false");
   const params = new URLSearchParams();
   params.append('fname', document.getElementById('fname').value);
   params.append('lname', document.getElementById('lname').value);
   params.append('comment', document.getElementById('commentInput').value);
+  params.append('clicked', 'true');
   document.getElementById('fname').value = '';
   document.getElementById('lname').value = '';
   document.getElementById('commentInput').value = '';
-  const request = new Request('/data', {method: 'POST', body: params});
-  await fetch(request);
+  await newChart("false", pageNum, params);
   getComments();
 }
 
@@ -76,14 +75,15 @@ function getComments() {
 
 function changePage(sign) {
   if(sign.localeCompare('+') == 0){
-      pageNum++;
+    pageNum++;
   } else {
-      pageNum--;
+    pageNum--;
   }
   fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=' + pageNum).then(response => response.json()).then((data) => {
     //  This to check if you can go more backwards or forwards so you do not get any blank pages
     if (data.totalNumOfComments > pageNum*document.getElementById('num-results').value && pageNum >= 0)
     {
+        // TODO: show  a blank page with no more comments and disable the button
         createChangePageButtons();
 
         const commentsSection = document.getElementById('comments');
@@ -119,9 +119,7 @@ function createComment(text, data) {
 }
 
 async function deleteAllComments() {
-  const request = new Request('/delete-data', {method: 'POST'});
-  await fetch(request);
-  newChart(null);
+  await newChart("null", pageNum, null);
   getComments();
 }
 
@@ -129,10 +127,8 @@ async function deleteAllComments() {
 async function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append('id', comment);
-  const request = new Request('/delete-comment', {method: 'POST', body: params});
-  await fetch(request);
+  await newChart("true", pageNum, params);
   getComments();
-  newChart("true");
 }
 
 function createChangePageButtons() {
@@ -144,18 +140,18 @@ function createChangePageButtons() {
 }
 
 function checkLogin() {
-    fetch('/check-login').then(response => response.json()).then((data) => {
-        const commentForm = document.getElementById('hidden');
-        if (data.loggedIn) {
-            commentForm.id = 'show';
-            const loggedInAsDiv = document.getElementById('loggedInAs');
-            loggedInAsDiv.innerHTML = '<p>You are logged in as ' + data.email + '. Logout <a href=\'' + data.logoutURL + '\'>here</a>.</p>';
-            loggedInAsDiv.innerHTML += '<div id="hidden"><input id="submitted-email" value="'+ data.email +'" name="'+ data.email +'"></div>'
-        } else {
-            const loginDiv = document.getElementById('login');
-            loginDiv.innerHTML = '<p>You are not logged in to leave a comment. Login <a href=\'' + data.loginURL + '\'>here</a>.</p>'
-        }
-    });
+  fetch('/check-login').then(response => response.json()).then((data) => {
+    const commentForm = document.getElementById('hidden');
+    if (data.loggedIn) {
+      commentForm.id = 'show';
+      const loggedInAsDiv = document.getElementById('loggedInAs');
+      loggedInAsDiv.innerHTML = '<p>You are logged in as ' + data.email + '. Logout <a href=\'' + data.logoutURL + '\'>here</a>.</p>';
+      loggedInAsDiv.innerHTML += '<div id="hidden"><input id="submitted-email" value="'+ data.email +'" name="'+ data.email +'"></div>'
+    } else {
+      const loginDiv = document.getElementById('login');
+      loginDiv.innerHTML = '<p>You are not logged in to leave a comment. Login <a href=\'' + data.loginURL + '\'>here</a>.</p>'
+    }
+  });
 }
 
 function checkLoginForDeleteAllButton() {
@@ -173,6 +169,6 @@ function onLoadFunctions() {
   getComments(); 
   checkLogin();
   createMap();
-  drawChart();
   checkLoginForDeleteAllButton();
+  drawChart((new Request('/data', {method: 'POST'})));
 }

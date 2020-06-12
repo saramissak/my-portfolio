@@ -18,6 +18,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/delete-data")
 public class DeleteAllCommentsServlet extends HttpServlet {
@@ -27,9 +29,26 @@ public class DeleteAllCommentsServlet extends HttpServlet {
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    
-    for (Entity entity : results.asIterable()) {
+    UserService userService = UserServiceFactory.getUserService();
+    String email = "sarammissak@gmail.com";
+    String googleEmail = "smissak@google.com";
+
+    if (userService.isUserLoggedIn() && (userService.getCurrentUser().getEmail()).equals(email) || (userService.getCurrentUser().getEmail()).equals(googleEmail)) {
+      for (Entity entity : results.asIterable()) {
         datastore.delete(entity.getKey());
+      }
+      query = new Query("ChartData");
+      results = datastore.prepare(query);
+
+      for (Entity entity : results.asIterable()) {
+        datastore.delete(entity.getKey());
+      }
+      
+      Map<String, Long> commentersCount = new HashMap<>();
+      response.setContentType("application/json");
+      Gson gson = new Gson();
+      String json = gson.toJson(commentersCount);
+      response.getWriter().println(json);
     }
   } 
 }
