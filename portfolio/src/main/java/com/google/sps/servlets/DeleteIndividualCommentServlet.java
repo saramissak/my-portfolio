@@ -24,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 /** Servlet responsible for deleting tasks. */
 @WebServlet("/delete-comment")
@@ -31,6 +34,24 @@ public class DeleteIndividualCommentServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("\\delete-comment start" + System.nanoTime());
+
+    double deadline = 5.0;
+
+    // Construct a read policy for eventual consistency
+    ReadPolicy policy = new ReadPolicy(ReadPolicy.Consistency.EVENTUAL);
+
+    // Set the read policy
+    DatastoreServiceConfig eventuallyConsistentConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy);
+
+    // Set the call deadline
+    DatastoreServiceConfig deadlineConfig = DatastoreServiceConfig.Builder.withDeadline(deadline);
+
+    // Set both the read policy and the call deadline
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy).deadline(deadline);
+
     Key id = KeyFactory.stringToKey(request.getParameter("id"));
 
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
@@ -70,9 +91,9 @@ public class DeleteIndividualCommentServlet extends HttpServlet {
       Gson gson = new Gson();
       String json = gson.toJson(commentersCount);
       response.getWriter().println(json);
-
     } catch (EntityNotFoundException e) {
 	  return;
     }
+  System.out.println("\\delete-comment end" + System.nanoTime());
   }
 }

@@ -61,12 +61,11 @@ async function submitComment() {
 
 function getComments() {
   fetch('/data?num-results=' + document.getElementById('num-results').value + '&page=0').then(response => response.json()).then((data) => {
+    
     const commentsSection = document.getElementById('comments');
     commentsSection.innerHTML = '';
     createChangePageButtons();
 
-    var i = 0; 
-    pageNum = 0;
     data.comments.forEach((line) => {
       commentsSection.appendChild(createComment(line, data));
     });
@@ -112,7 +111,7 @@ function createComment(text, data) {
   divElement.id = 'comment';
   divElement.innerHTML = "<h5>" + text.fname + " " + text.lname + "</h5>";
   if (data.email != null && (data.email).localeCompare(text.email) == 0){
-    divElement.innerHTML = "<h5><a onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X</a>"  + text.fname + " " + text.lname + "</h5>";
+    divElement.innerHTML = "<h5><input type='button' value='X' onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X" + text.fname + " " + text.lname + "</h5>";
   }
   divElement.innerHTML += "<h6>" + text.email + "</h6><p>"  + text.message + "</p><br/><br/>";
   return divElement;
@@ -155,11 +154,10 @@ function checkLogin() {
 }
 
 function checkLoginForDeleteAllButton() {
-    fetch('/check-login').then(response => response.json()).then((data) => {
+  fetch('/check-login').then(response => response.json()).then((data) => {
     const commentsSection = document.getElementById('deleteAll');
-    if ((data.email).localeCompare("sarammissak@gmail.com") == 0 || (data.email).localeCompare("smissak@google.com") == 0)
-    {
-        commentsSection.id = 'deleteAllShow';
+    if ((data.email).localeCompare("sarammissak@gmail.com") == 0 || (data.email).localeCompare("smissak@google.com") == 0) {
+      commentsSection.id = 'deleteAllShow';
     }
   });
 }

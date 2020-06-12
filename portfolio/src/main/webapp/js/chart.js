@@ -3,7 +3,7 @@ google.charts.setOnLoadCallback(drawChart);
 
 /** Fetches data and uses it to create a chart. */
 async function drawChart(request = (new Request('/data', {method: 'POST'}))) {
-  fetch(request).then(response => response.json()).then((commentsSubmitted) => {
+  await fetch(request).then(response => response.json()).then((commentsSubmitted) => {
     const data = new google.visualization.DataTable();
     data.addColumn('string', 'Email');
     data.addColumn('number', 'Comments');
@@ -37,5 +37,5 @@ async function newChart(deleted, pageNum, params) {
     params.append('page', pageNum);
     request = new Request('/data', {method: 'POST', body: params});
   } 
-  drawChart(request);
+  await drawChart(request);
 }

@@ -43,6 +43,9 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 /** Servlet that returns some example content. */
 @WebServlet("/data")
@@ -52,6 +55,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("\\data start" + System.nanoTime());
     response.setContentType("application/json");
 
     String numResultsString = request.getParameter("num-results");
@@ -67,6 +71,22 @@ public class DataServlet extends HttpServlet {
     }
     
     int offset = Math.max(0, page*numResults);
+
+    double deadline = 5.0;
+
+    // Construct a read policy for eventual consistency
+    ReadPolicy policy = new ReadPolicy(ReadPolicy.Consistency.EVENTUAL);
+
+    // Set the read policy
+    DatastoreServiceConfig eventuallyConsistentConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy);
+
+    // Set the call deadline
+    DatastoreServiceConfig deadlineConfig = DatastoreServiceConfig.Builder.withDeadline(deadline);
+
+    // Set both the read policy and the call deadline
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy).deadline(deadline);
 
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -94,10 +114,28 @@ public class DataServlet extends HttpServlet {
 
     String json = new Gson().toJson(data);
     response.getWriter().println(json);
+    System.out.println("\\data end" + System.nanoTime());
+
   }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    double deadline = 5.0;
+
+    // Construct a read policy for eventual consistency
+    ReadPolicy policy = new ReadPolicy(ReadPolicy.Consistency.EVENTUAL);
+
+    // Set the read policy
+    DatastoreServiceConfig eventuallyConsistentConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy);
+
+    // Set the call deadline
+    DatastoreServiceConfig deadlineConfig = DatastoreServiceConfig.Builder.withDeadline(deadline);
+
+    // Set both the read policy and the call deadline
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy).deadline(deadline);
+    
     String clicked = getParameter(request, "clicked", "null");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
