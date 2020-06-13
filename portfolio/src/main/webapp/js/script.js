@@ -111,7 +111,7 @@ function createComment(text, data) {
   divElement.id = 'comment';
   divElement.innerHTML = "<h5>" + text.fname + " " + text.lname + "</h5>";
   if (data.email != null && (data.email).localeCompare(text.email) == 0){
-    divElement.innerHTML = "<h5><input type='button' value='X' onclick='deleteComment(\""+ text.key +"\")' class='right-shift'>X" + text.fname + " " + text.lname + "</h5>";
+    divElement.innerHTML = "<h5><input type='button' value='X' onclick='deleteComment(\""+ text.key +"\")' class='right-shift'></input>" + text.fname + " " + text.lname + "</h5>";
   }
   divElement.innerHTML += "<h6>" + text.email + "</h6><p>"  + text.message + "</p><br/><br/>";
   return divElement;
