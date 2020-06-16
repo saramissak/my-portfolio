@@ -20,10 +20,35 @@ import java.util.ArrayList;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    Collection<String> attendes = request.getAttendees();
+    Collection<String> mandatoryAttendes = request.getAttendees();
+    Collection<String> optionalAttendes = request.getOptionalAttendees();
+    Collection<String> optionalWithMandatoryAttendes = new ArrayList<>();
     long meetingDuration = request.getDuration();
 
-    ArrayList<TimeRange> timeOfEvents = new ArrayList<>();
+	if (mandatoryAttendes.size() == 0) {
+        return getAvailableTimes(events, meetingDuration, optionalAttendes);
+    }
+
+    for (String optional : optionalAttendes) {
+        optionalWithMandatoryAttendes.add(optional);
+    }
+
+    for (String mandatory : mandatoryAttendes) {
+        optionalWithMandatoryAttendes.add(mandatory);
+    }
+
+    Collection<TimeRange> availableTimesForMandatory = getAvailableTimes(events, meetingDuration, mandatoryAttendes);
+    Collection<TimeRange> availableTimesForOptionalWithMandatory = getAvailableTimes(events, meetingDuration, optionalWithMandatoryAttendes);
+
+    if (availableTimesForOptionalWithMandatory.size() == 0 || 
+       (Collections.disjoint(availableTimesForMandatory, availableTimesForOptionalWithMandatory) && availableTimesForMandatory.size() != 0 )) {
+        return availableTimesForMandatory;
+    }
+    return availableTimesForOptionalWithMandatory;    
+  }
+
+  private Collection<TimeRange> getAvailableTimes(Collection<Event> events, long meetingDuration, Collection<String> attendes) {
+	ArrayList<TimeRange> timeOfEvents = new ArrayList<>();
     for (Event event : events) {
         if (!Collections.disjoint(event.getAttendees(), attendes))
         {
