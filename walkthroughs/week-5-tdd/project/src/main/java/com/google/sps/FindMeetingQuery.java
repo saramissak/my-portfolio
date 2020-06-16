@@ -27,6 +27,8 @@ public final class FindMeetingQuery {
 
 	if (mandatoryAttendes.size() == 0) {
         return getAvailableTimes(events, meetingDuration, optionalAttendes);
+    } else if (optionalAttendes.size() == 0) {
+        return getAvailableTimes(events, meetingDuration, mandatoryAttendes);
     }
 
     for (String optional : optionalAttendes) {
