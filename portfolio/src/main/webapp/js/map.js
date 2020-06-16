@@ -8,13 +8,17 @@ function createMap() {
   var holmdelParkLatlng = {lat: 40.3704118, lng: -74.1865324};
   var lombardiLatlng = {lat: 40.3965513, lng: -74.305296};
 
-  var latlangs = [bobaLatlng, CMULatlng, holmdelParkLatlng, lombardiLatlng];
+  var latlngs = [bobaLatlng, CMULatlng, holmdelParkLatlng, lombardiLatlng];
 
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 18,
-    center: latlangs[pos],
+    center: latlngs[pos],
     mapTypeId: 'hybrid',
     gestureHandling: 'greedy'
+  });
+
+  fetch('/add-marker').then(response => response.json()).then((markers) => {
+      console.log(markers.length);
   });
 
   var bobaContentString = '<div id="content">'+
@@ -54,7 +58,7 @@ function createMap() {
       'https://www.cmu.edu/</a></p>'+
       '</div>'+
       '</div>';
-  makeMarker(map, holmdelParkLatlng, holmdelParkContentString, 'Holmdel Park')
+  makeMarker(map, holmdelParkLatlng, holmdelParkContentString, 'Holmdel Park');
 
   var lombardiContentString = '<div id="content">'+
       '<div id="siteNotice">'+
@@ -65,7 +69,9 @@ function createMap() {
       'This is a great place to go to relax and get your mind off of school work.</p>'+
       '</div>'+
       '</div>';
-  makeMarker(map, lombardiLatlng, lombardiContentString, 'Lombardi Field')
+  makeMarker(map, lombardiLatlng, lombardiContentString, 'Lombardi Field');
+
+  placeMarker();
 }
 
 // Given the arguments, creates a marker on the given map
@@ -90,8 +96,28 @@ function changeZoom() {
   var holmdelParkLatlng = {lat: 40.3704118, lng: -74.1865324};
   var lombardiLatlng = {lat: 40.3965513, lng: -74.305296};
 
-  var latlangs = [bobaLatlng, CMULatlng, holmdelParkLatlng, lombardiLatlng];
+  var latlngs = [bobaLatlng, CMULatlng, holmdelParkLatlng, lombardiLatlng];
 
-  pos = (pos + 1) % latlangs.length;
-  map.panTo(new google.maps.LatLng(latlangs[pos]));  
+  pos = (pos + 1) % latlngs.length;
+  map.panTo(new google.maps.LatLng(latlngs[pos]));  
+}
+
+function placeMarker() {
+    // Configure the click listener.
+    map.addListener('rightclick', function(mapsMouseEvent) {
+      var latlng = mapsMouseEvent.latLng;
+
+      const params = new URLSearchParams();
+	  params.append('latlng', latlng)
+      const request = new Request('/add-marker', {method: 'POST', body: params});
+      fetch(request);
+      makeMarker(map, latlng, '', '');
+    
+      fetch('/add-marker').then(response => response.json()).then((markers) => {
+        console.log(typeof markers);
+        markers.forEach(line =>
+          console.log(line.propertMap.latlng)
+        );
+      });
+    });
 }

@@ -37,7 +37,7 @@ public class ChartServlet extends HttpServlet {
         return;
     }
 
-    int currentVotes = popularCommenters.containsKey(email) ? popularCommenters.get(email) : 0;
+    int currentVotes = popularCommenters.getOrDefault(email, 0);
     Boolean deleted = Boolean.parseBoolean(request.getParameter("deleted"));
     if (!deleted) {
       popularCommenters.put(email, currentVotes + 1);

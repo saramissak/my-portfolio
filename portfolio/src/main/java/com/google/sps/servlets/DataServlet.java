@@ -25,6 +25,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,14 +35,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Key;
 import java.text.DateFormat;  
 import java.text.SimpleDateFormat;  
 import java.util.Date;  
 import java.util.Calendar; 
 import com.google.appengine.api.datastore.FetchOptions;
-
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 /** Servlet that returns some example content. */
 @WebServlet("/data")
@@ -50,6 +55,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("\\data start" + System.nanoTime());
     response.setContentType("application/json");
 
     String numResultsString = request.getParameter("num-results");
@@ -64,18 +70,32 @@ public class DataServlet extends HttpServlet {
         page = Integer.parseInt(pageString);
     }
     
-    int offset = page*numResults;
+    int offset = Math.max(0, page*numResults);
+
+    double deadline = 5.0;
+
+    // Construct a read policy for eventual consistency
+    ReadPolicy policy = new ReadPolicy(ReadPolicy.Consistency.EVENTUAL);
+
+    // Set the read policy
+    DatastoreServiceConfig eventuallyConsistentConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy);
+
+    // Set the call deadline
+    DatastoreServiceConfig deadlineConfig = DatastoreServiceConfig.Builder.withDeadline(deadline);
+
+    // Set both the read policy and the call deadline
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy).deadline(deadline);
 
     Query query = new Query("Messages").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(offset + numResults));
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(numResults).offset(offset));
 
-    if (entities.size() == 0 || 0 < offset+numResults && offset < entities.size())
-    {
-      comments = new ArrayList<Comment>();
-    }
-    for (int i = offset; i < offset+numResults && i < entities.size() && i >= 0; i++) {
+
+    comments = new ArrayList<Comment>();
+    for (int i = 0; i < numResults && i < entities.size() && i >= 0; i++) {
       Comment comment = new Comment();
       comment.fname =  (String) entities.get(i).getProperty("fname");
       comment.lname =  (String) entities.get(i).getProperty("lname");
@@ -94,12 +114,35 @@ public class DataServlet extends HttpServlet {
 
     String json = new Gson().toJson(data);
     response.getWriter().println(json);
+    System.out.println("\\data end" + System.nanoTime());
+
   }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    double deadline = 5.0;
+
+    // Construct a read policy for eventual consistency
+    ReadPolicy policy = new ReadPolicy(ReadPolicy.Consistency.EVENTUAL);
+
+    // Set the read policy
+    DatastoreServiceConfig eventuallyConsistentConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy);
+
+    // Set the call deadline
+    DatastoreServiceConfig deadlineConfig = DatastoreServiceConfig.Builder.withDeadline(deadline);
+
+    // Set both the read policy and the call deadline
+    DatastoreServiceConfig datastoreConfig =
+    DatastoreServiceConfig.Builder.withReadPolicy(policy).deadline(deadline);
+    
+    String clicked = getParameter(request, "clicked", "null");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
+    Query query = new Query("ChartData");
+    PreparedQuery results = datastore.prepare(query);
+    
+    if (userService.isUserLoggedIn() && clicked.equals("true")) {
       String text = getParameter(request, "comment", "");
       String fname = getParameter(request, "fname", "");
       String lname = getParameter(request, "lname", ""); 
@@ -108,16 +151,15 @@ public class DataServlet extends HttpServlet {
 
       String userEmail = userService.getCurrentUser().getEmail();
 
-      Entity taskEntity = new Entity("Messages");
-      taskEntity.setProperty("message", text);
-      taskEntity.setProperty("fname", fname);
-      taskEntity.setProperty("lname", lname);
-      taskEntity.setProperty("timestamp", time);
-      taskEntity.setProperty("email", userEmail);
+      Entity messageEntity = new Entity("Messages");
+      messageEntity.setProperty("message", text);
+      messageEntity.setProperty("fname", fname);
+      messageEntity.setProperty("lname", lname);
+      messageEntity.setProperty("timestamp", time);
+      messageEntity.setProperty("email", userEmail);
       
       
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(taskEntity);
+      datastore.put(messageEntity);
     
       Comment comment = new Comment();
       comment.fname =  (String) fname;
@@ -125,11 +167,39 @@ public class DataServlet extends HttpServlet {
       comment.message =  (String) text;
       comment.timeStamp = time;
       comment.email = userEmail;
-      comment.key =  KeyFactory.keyToString(taskEntity.getKey());
+      comment.key =  KeyFactory.keyToString(messageEntity.getKey());
       comments.add(comment);
+
+      Entity user = null;
+
+      for (Entity entity : results.asIterable()) {
+        if (entity.getProperty("email").equals(userEmail))
+        {
+          user = entity;
+          break;
+        }
+      }
+
+      if (user == null) {
+          user = new Entity("ChartData");
+          user.setProperty("email", userEmail);
+          user.setProperty("numOfComments", 1);
+          datastore.put(user);
+      } else {
+          long count = (long) user.getProperty("numOfComments");
+          user.setProperty("numOfComments", count + 1);
+          datastore.put(user);
+      }
     }
-    // Redirect back to the HTML page.
-    // response.sendRedirect("/index.html");
+    Map<String, Long> commentersCount = new HashMap<>();
+    for (Entity entity : results.asIterable()) {
+      commentersCount.put((String) entity.getProperty("email"), (long) entity.getProperty("numOfComments"));
+    }
+    commentersCount = Comment.nLargestCommenters(commentersCount, 10);
+    response.setContentType("application/json");
+    Gson gson = new Gson();
+    String json = gson.toJson(commentersCount);
+    response.getWriter().println(json);
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
