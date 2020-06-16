@@ -55,7 +55,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("\\data start" + System.nanoTime());
     response.setContentType("application/json");
 
     String numResultsString = request.getParameter("num-results");
@@ -95,7 +94,7 @@ public class DataServlet extends HttpServlet {
 
 
     comments = new ArrayList<Comment>();
-    for (int i = 0; i < numResults && i < entities.size() && i >= 0; i++) {
+    for (int i = 0; i < numResults && i < entities.size(); i++) {
       Comment comment = new Comment();
       comment.fname =  (String) entities.get(i).getProperty("fname");
       comment.lname =  (String) entities.get(i).getProperty("lname");
@@ -114,8 +113,6 @@ public class DataServlet extends HttpServlet {
 
     String json = new Gson().toJson(data);
     response.getWriter().println(json);
-    System.out.println("\\data end" + System.nanoTime());
-
   }
   
   @Override
