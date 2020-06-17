@@ -105,12 +105,8 @@ function changePage(sign) {
         const commentsSection = document.getElementById('comments');
         commentsSection.innerHTML = '';
 
-        var resultsNum = document.getElementById('num-results').value;
-        var offset = (pageNum)*resultsNum;
-
         data.comments.forEach((line) => {
           commentsSection.appendChild(createComment(line, data));
-          resultsNum--;
         });
     } else { // If you cannot go any more forward or backward reverse the change of page count
         if(sign.localeCompare('+') == 0){

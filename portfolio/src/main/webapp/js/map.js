@@ -121,7 +121,7 @@ function addUserMarkerOnLoad(map, latLng) {
   latLng = latLng.replace(")", "");
   latLng = latLng.split(",");
   var marker = new google.maps.Marker({
-    position: {lat: parseInt(latLng[0]), lng: parseInt(latLng[1])},
+    position: {lat: parseFloat(latLng[0]), lng: parseFloat(latLng[1])},
     map: map,
     icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
   });
