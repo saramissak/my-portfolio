@@ -18,6 +18,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Comment;
 import com.google.sps.data.TotalComments;
+import com.google.sps.data.ChartDataWithTotalCommentCount;
 import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -188,14 +189,16 @@ public class DataServlet extends HttpServlet {
           datastore.put(user);
       }
     }
-    Map<String, Long> commentersCount = new HashMap<>();
+    Map<String, Long> accountIdToCommentCountMap = new HashMap<>();
     for (Entity entity : results.asIterable()) {
-      commentersCount.put((String) entity.getProperty("email"), (long) entity.getProperty("numOfComments"));
+      accountIdToCommentCountMap.put((String) entity.getProperty("email"), (long) entity.getProperty("numOfComments"));
     }
-    commentersCount = Comment.nLargestCommenters(commentersCount, 10);
+    accountIdToCommentCountMap = Comment.nLargestCommenters(accountIdToCommentCountMap, 10);
+
+    ChartDataWithTotalCommentCount data = new ChartDataWithTotalCommentCount(accountIdToCommentCountMap, results.countEntities());
     response.setContentType("application/json");
     Gson gson = new Gson();
-    String json = gson.toJson(commentersCount);
+    String json = gson.toJson(data);
     response.getWriter().println(json);
   }
 

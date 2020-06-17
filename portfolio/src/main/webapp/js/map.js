@@ -18,8 +18,10 @@ function createMap() {
   });
 
   fetch('/add-marker').then(response => response.json()).then((markers) => {
-      console.log(markers.length);
-  });
+        markers.forEach(line =>
+          addUserMarkerOnLoad(map, line.propertyMap.latlng)
+        );
+      });
 
   var bobaContentString = '<div id="content">'+
       '<div id="siteNotice">'+
@@ -103,21 +105,32 @@ function changeZoom() {
 }
 
 function placeMarker() {
-    // Configure the click listener.
-    map.addListener('rightclick', function(mapsMouseEvent) {
-      var latlng = mapsMouseEvent.latLng;
+  // Configure the click listener.
+  map.addListener('rightclick', function(mapsMouseEvent) {
+    var latlng = mapsMouseEvent.latLng;
+    const params = new URLSearchParams();
+    params.append('latlng', latlng)
+    const request = new Request('/add-marker', {method: 'POST', body: params});
+    fetch(request);
+    addUserMarkerAfterOnRightClick(latlng);
+  });
+}
 
-      const params = new URLSearchParams();
-	  params.append('latlng', latlng)
-      const request = new Request('/add-marker', {method: 'POST', body: params});
-      fetch(request);
-      makeMarker(map, latlng, '', '');
-    
-      fetch('/add-marker').then(response => response.json()).then((markers) => {
-        console.log(typeof markers);
-        markers.forEach(line =>
-          console.log(line.propertMap.latlng)
-        );
-      });
-    });
+function addUserMarkerOnLoad(map, latLng) {
+  latLng = latLng.replace("(", "");
+  latLng = latLng.replace(")", "");
+  latLng = latLng.split(",");
+  var marker = new google.maps.Marker({
+    position: {lat: parseInt(latLng[0]), lng: parseInt(latLng[1])},
+    map: map,
+    icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+  });
+}
+
+function addUserMarkerAfterOnRightClick(latLng) {
+  var marker = new google.maps.Marker({
+    position: latLng,
+    map: map,
+    icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+  });
 }

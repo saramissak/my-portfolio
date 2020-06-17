@@ -69,6 +69,24 @@ function getComments() {
     data.comments.forEach((line) => {
       commentsSection.appendChild(createComment(line, data));
     });
+
+    pageNum = 0;
+
+    if (pageNum <= 0) {
+      document.getElementById('previous-button-top').disabled = true;
+      document.getElementById('previous-button-bottom').disabled = true
+    } else {
+      document.getElementById('previous-button-top').disabled = false;
+      document.getElementById('previous-button-bottom').disabled = false;    
+    }
+
+    if (data.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value) {
+      document.getElementById('next-button-top').disabled = true;
+      document.getElementById('next-button-bottom').disabled = true;
+    } else {
+      document.getElementById('next-button-top').disabled = false;
+      document.getElementById('next-button-bottom').disabled = false;
+    }
   });
 }
 
@@ -82,7 +100,6 @@ function changePage(sign) {
     //  This to check if you can go more backwards or forwards so you do not get any blank pages
     if (data.totalNumOfComments > pageNum*document.getElementById('num-results').value && pageNum >= 0)
     {
-        // TODO: show  a blank page with no more comments and disable the button
         createChangePageButtons();
 
         const commentsSection = document.getElementById('comments');
@@ -102,6 +119,24 @@ function changePage(sign) {
            pageNum++;
         }
     }
+
+	console.log(pageNum);
+    if (pageNum <= 0) {
+      document.getElementById('previous-button-top').disabled = true;
+      document.getElementById('previous-button-bottom').disabled = true
+    } else {
+      document.getElementById('previous-button-top').disabled = false;
+      document.getElementById('previous-button-bottom').disabled = false;    
+    }
+
+	console.log(data.totalNumOfComments);
+    if (data.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value) {
+      document.getElementById('next-button-top').disabled = true;
+      document.getElementById('next-button-bottom').disabled = true;
+    } else {
+      document.getElementById('next-button-top').disabled = false;
+      document.getElementById('next-button-bottom').disabled = false;
+    }
   });
 }
 
@@ -120,6 +155,7 @@ function createComment(text, data) {
 async function deleteAllComments() {
   await newChart("null", pageNum, null);
   getComments();
+  pageNum = 0;
 }
 
 /** Tells the server to delete the comment. */
@@ -131,11 +167,11 @@ async function deleteComment(comment) {
 }
 
 function createChangePageButtons() {
-  document.getElementById('chanegPageTop').innerHTML = "<form='GET'><input type='submit' name='page'  class='btn waves-light left-shift' value='Previous Page' onclick='changePage(\"-\")'/>" + 
-  "<input type='submit' name='page' class='btn waves-light right-shift' value='Next Page' onclick='changePage(\"+\")'/></form> <br/></br><br/>";
+  document.getElementById('chanegPageTop').innerHTML = "<form='GET'><input type='submit' name='page' id='previous-button-top' class='previous-button btn waves-light left-shift' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page'  id='next-button-top' class='next-button btn waves-light right-shift' value='Next Page' onclick='changePage(\"+\")'/></form> <br/></br><br/>";
   
-  document.getElementById('chanegPageBottom').innerHTML = "<form='GET'><input type='submit' name='page'  class='btn waves-light left-shift' value='Previous Page' onclick='changePage(\"-\")'/>" + 
-  "<input type='submit' name='page'  class='btn waves-light right-shift' value='Next Page' onclick='changePage(\"+\")'/></form>";
+  document.getElementById('chanegPageBottom').innerHTML = "<form='GET'><input type='submit' name='page' id='previous-button-bottom' class='previous-button btn waves-light left-shift' value='Previous Page' onclick='changePage(\"-\")'/>" + 
+  "<input type='submit' name='page'  id='next-button-bottom' class='next-button btn waves-light right-shift' value='Next Page' onclick='changePage(\"+\")'/></form>";
 }
 
 function checkLogin() {
@@ -156,7 +192,7 @@ function checkLogin() {
 function checkLoginForDeleteAllButton() {
   fetch('/check-login').then(response => response.json()).then((data) => {
     const commentsSection = document.getElementById('deleteAll');
-    if ((data.email).localeCompare("sarammissak@gmail.com") == 0 || (data.email).localeCompare("smissak@google.com") == 0) {
+    if ((data.email).localeCompare("Sarammissak@gmail.com") == 0 || (data.email).localeCompare("smissak@google.com") == 0) {
       commentsSection.id = 'deleteAllShow';
     }
   });
@@ -168,5 +204,6 @@ function onLoadFunctions() {
   checkLogin();
   createMap();
   checkLoginForDeleteAllButton();
-  drawChart((new Request('/data', {method: 'POST'})));
+  createChangePageButtons();
+  drawChart(new Request('/data', {method: 'POST'}));
 }
