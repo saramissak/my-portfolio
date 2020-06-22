@@ -72,21 +72,12 @@ function getComments() {
 
     pageNum = 0;
 
-    if (pageNum <= 0) {
-      document.getElementById('previous-button-top').disabled = true;
-      document.getElementById('previous-button-bottom').disabled = true
-    } else {
-      document.getElementById('previous-button-top').disabled = false;
-      document.getElementById('previous-button-bottom').disabled = false;    
-    }
+    document.getElementById('previous-button-top').disabled = true;
+    document.getElementById('previous-button-bottom').disabled = true
 
-    if (data.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value) {
-      document.getElementById('next-button-top').disabled = true;
-      document.getElementById('next-button-bottom').disabled = true;
-    } else {
-      document.getElementById('next-button-top').disabled = false;
-      document.getElementById('next-button-bottom').disabled = false;
-    }
+    var nextButtonDisabled = data.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value;
+    document.getElementById('next-button-top').disabled = nextButtonDisabled;
+    document.getElementById('next-button-bottom').disabled = nextButtonDisabled;
   });
 }
 
@@ -116,23 +107,13 @@ function changePage(sign) {
         }
     }
 
-	console.log(pageNum);
-    if (pageNum <= 0) {
-      document.getElementById('previous-button-top').disabled = true;
-      document.getElementById('previous-button-bottom').disabled = true
-    } else {
-      document.getElementById('previous-button-top').disabled = false;
-      document.getElementById('previous-button-bottom').disabled = false;    
-    }
-
-	console.log(data.totalNumOfComments);
-    if (data.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value) {
-      document.getElementById('next-button-top').disabled = true;
-      document.getElementById('next-button-bottom').disabled = true;
-    } else {
-      document.getElementById('next-button-top').disabled = false;
-      document.getElementById('next-button-bottom').disabled = false;
-    }
+    var previousButtonDisabled = pageNum <= 0;
+    document.getElementById('previous-button-top').disabled = previousButtonDisabled;
+    document.getElementById('previous-button-bottom').disabled = previousButtonDisabled
+ 
+    var nextButtonDisabled = data.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value;
+    document.getElementById('next-button-top').disabled = nextButtonDisabled;
+    document.getElementById('next-button-bottom').disabled = nextButtonDisabled;
   });
 }
 

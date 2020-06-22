@@ -37,10 +37,11 @@ public class MapServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {  
-    String latlng = (String) request.getParameter("latlng");
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // the position is the latitude and longitude
+    String position = (String) request.getParameter("position");
     Entity markerEntity = new Entity("Markers");
-    markerEntity.setProperty("latlng", latlng); 
+    markerEntity.setProperty("position", position); 
       
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(markerEntity);
