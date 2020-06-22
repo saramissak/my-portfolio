@@ -15,9 +15,80 @@
 package com.google.sps;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.ArrayList;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+    Collection<String> mandatoryAttendes = request.getAttendees();
+    Collection<String> optionalAttendes = request.getOptionalAttendees();
+    Collection<String> optionalWithMandatoryAttendes = new ArrayList<>();
+    long meetingDuration = request.getDuration();
+
+	if (mandatoryAttendes.size() == 0) {
+        return getAvailableTimes(events, meetingDuration, optionalAttendes);
+    } else if (optionalAttendes.size() == 0) {
+        return getAvailableTimes(events, meetingDuration, mandatoryAttendes);
+    }
+
+    for (String optional : optionalAttendes) {
+        optionalWithMandatoryAttendes.add(optional);
+    }
+
+    for (String mandatory : mandatoryAttendes) {
+        optionalWithMandatoryAttendes.add(mandatory);
+    }
+
+    Collection<TimeRange> availableTimesForMandatory = getAvailableTimes(events, meetingDuration, mandatoryAttendes);
+    Collection<TimeRange> availableTimesForOptionalWithMandatory = getAvailableTimes(events, meetingDuration, optionalWithMandatoryAttendes);
+
+    if (availableTimesForOptionalWithMandatory.size() == 0 || 
+       (Collections.disjoint(availableTimesForMandatory, availableTimesForOptionalWithMandatory) && availableTimesForMandatory.size() != 0 )) {
+        return availableTimesForMandatory;
+    }
+    return availableTimesForOptionalWithMandatory;    
+  }
+
+  private Collection<TimeRange> getAvailableTimes(Collection<Event> events, long meetingDuration, Collection<String> attendes) {
+	ArrayList<TimeRange> timeOfEvents = new ArrayList<>();
+    for (Event event : events) {
+        if (!Collections.disjoint(event.getAttendees(), attendes))
+        {
+            timeOfEvents.add(event.getWhen());
+        }
+    }
+
+    Collections.sort(timeOfEvents, TimeRange.ORDER_BY_START);
+
+	// Gets ride of times that are overlapping
+	int i = 0;
+    while (i < timeOfEvents.size() - 1) {
+        int j = i + 1;
+        while (j < timeOfEvents.size()) {
+            if (timeOfEvents.get(i).contains(timeOfEvents.get(j))) {
+                timeOfEvents.remove(j);
+                j--;
+            } else if (!(timeOfEvents.get(i).overlaps(timeOfEvents.get(j)))) break;
+            j++;
+        }
+        i++;
+    }
+
+	// get in between the elements that are longer than teh meeting duration
+    int start = TimeRange.START_OF_DAY;
+    Collection<TimeRange> result = new ArrayList<>();
+    for (i = 0; i < timeOfEvents.size(); i++) {
+        int nextStart = timeOfEvents.get(i).start();
+        if (nextStart - start >= meetingDuration) {
+            result.add(TimeRange.fromStartEnd(start, nextStart, false));
+        }
+        start = timeOfEvents.get(i).end();
+    }
+
+    //case for end of the day
+    if (TimeRange.END_OF_DAY - start >= meetingDuration) {
+        result.add(TimeRange.fromStartEnd(start, TimeRange.END_OF_DAY, true));
+    }
+    return result;
   }
 }

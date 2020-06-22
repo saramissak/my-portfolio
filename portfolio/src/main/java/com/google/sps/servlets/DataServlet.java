@@ -18,6 +18,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Comment;
 import com.google.sps.data.TotalComments;
+import com.google.sps.data.ChartDataWithTotalCommentCount;
 import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -55,7 +56,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("\\data start" + System.nanoTime());
     response.setContentType("application/json");
 
     String numResultsString = request.getParameter("num-results");
@@ -95,7 +95,7 @@ public class DataServlet extends HttpServlet {
 
 
     comments = new ArrayList<Comment>();
-    for (int i = 0; i < numResults && i < entities.size() && i >= 0; i++) {
+    for (int i = 0; i < numResults && i < entities.size(); i++) {
       Comment comment = new Comment();
       comment.fname =  (String) entities.get(i).getProperty("fname");
       comment.lname =  (String) entities.get(i).getProperty("lname");
@@ -114,8 +114,6 @@ public class DataServlet extends HttpServlet {
 
     String json = new Gson().toJson(data);
     response.getWriter().println(json);
-    System.out.println("\\data end" + System.nanoTime());
-
   }
   
   @Override
@@ -191,14 +189,16 @@ public class DataServlet extends HttpServlet {
           datastore.put(user);
       }
     }
-    Map<String, Long> commentersCount = new HashMap<>();
+    Map<String, Long> accountIdToCommentCountMap = new HashMap<>();
     for (Entity entity : results.asIterable()) {
-      commentersCount.put((String) entity.getProperty("email"), (long) entity.getProperty("numOfComments"));
+      accountIdToCommentCountMap.put((String) entity.getProperty("email"), (long) entity.getProperty("numOfComments"));
     }
-    commentersCount = Comment.nLargestCommenters(commentersCount, 10);
+    accountIdToCommentCountMap = Comment.nLargestCommenters(accountIdToCommentCountMap, 10);
+
+    ChartDataWithTotalCommentCount data = new ChartDataWithTotalCommentCount(accountIdToCommentCountMap, results.countEntities());
     response.setContentType("application/json");
     Gson gson = new Gson();
-    String json = gson.toJson(commentersCount);
+    String json = gson.toJson(data);
     response.getWriter().println(json);
   }
 

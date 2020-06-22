@@ -27,6 +27,8 @@ import java.util.Map;
 import com.google.appengine.api.datastore.ReadPolicy;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.sps.data.ChartDataWithTotalCommentCount;
+
 
 /** Servlet responsible for deleting tasks. */
 @WebServlet("/delete-comment")
@@ -34,8 +36,6 @@ public class DeleteIndividualCommentServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("\\delete-comment start" + System.nanoTime());
-
     double deadline = 5.0;
 
     // Construct a read policy for eventual consistency
@@ -74,7 +74,7 @@ public class DeleteIndividualCommentServlet extends HttpServlet {
       query = new Query("ChartData");
       PreparedQuery results = datastore.prepare(query);
 
-      Map<String, Long> commentersCount = new HashMap<>();
+      Map<String, Long> accountIdToCommentCountMap = new HashMap<>();
 
       for (Entity entity : results.asIterable()) {
         if (entity.getProperty("email").equals(userEmail))
@@ -83,17 +83,18 @@ public class DeleteIndividualCommentServlet extends HttpServlet {
           entity.setProperty("numOfComments", Math.max(0, count - 1));
           datastore.put(entity);
         }
-        commentersCount.put((String) entity.getProperty("email"), (long) entity.getProperty("numOfComments"));
+        accountIdToCommentCountMap.put((String) entity.getProperty("email"), (long) entity.getProperty("numOfComments"));
       }
 
-      commentersCount = Comment.nLargestCommenters(commentersCount, 10);
+      accountIdToCommentCountMap = Comment.nLargestCommenters(accountIdToCommentCountMap, 10);
+      ChartDataWithTotalCommentCount data = new ChartDataWithTotalCommentCount(accountIdToCommentCountMap, results.countEntities());
+
       response.setContentType("application/json");
       Gson gson = new Gson();
-      String json = gson.toJson(commentersCount);
+      String json = gson.toJson(data);
       response.getWriter().println(json);
     } catch (EntityNotFoundException e) {
 	  return;
     }
-  System.out.println("\\delete-comment end" + System.nanoTime());
   }
 }

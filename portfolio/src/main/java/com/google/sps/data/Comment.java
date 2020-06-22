@@ -13,31 +13,31 @@ public class Comment {
   public String email;
   public String key;
 
-  public static Map<String, Long> nLargestCommenters(Map<String, Long> hashMap, int n) {
-    Long value;
-    List<String> strings = new ArrayList<>(n); 
+  public static Map<String, Long> nLargestCommenters(Map<String, Long> accountIdToCommentCountMap, int n) {
+    Long commentCounts;
+    List<String> accountIds = new ArrayList<>(n); 
     List<Long> counts = new ArrayList<>(n); 
     int index;
 
-    // Allows you to loop through all of elements in the hashMap
-    for (String key : hashMap.keySet()) { 
-      value = hashMap.get(key); 
-      index = strings.size() - 1; 
-      while (index >= 0 && value > counts.get(index)) { 
+    // Gets the top n comments
+    for (String key : accountIdToCommentCountMap.keySet()) { 
+      commentCounts = accountIdToCommentCountMap.get(key); 
+      index = accountIds.size() - 1; 
+      while (index >= 0 && commentCounts > counts.get(index)) { 
         index--; 
       }
       index = index + 1; 
-      counts.add(index, value); 
-      strings.add(index, key); 
+      counts.add(index, commentCounts); 
+      accountIds.add(index, key); 
       if (counts.size() > n) {
         counts.remove(n); 
-        strings.remove(n);
+        accountIds.remove(n);
       }
     }
     
     Map<String, Long> result = new HashMap<>(counts.size());
     for (int i = 0; i < counts.size(); i++) { 
-      result.put(strings.get(i), counts.get(i));
+      result.put(accountIds.get(i), counts.get(i));
     }
     return result;
   }
