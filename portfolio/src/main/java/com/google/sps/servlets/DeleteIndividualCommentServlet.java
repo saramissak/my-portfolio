@@ -27,8 +27,7 @@ import java.util.Map;
 import com.google.appengine.api.datastore.ReadPolicy;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.sps.data.ChartDataWithTotalCommentCount;
-
+import com.google.sps.data.CommentAnalytics;
 
 /** Servlet responsible for deleting tasks. */
 @WebServlet("/delete-comment")
@@ -87,7 +86,7 @@ public class DeleteIndividualCommentServlet extends HttpServlet {
       }
 
       accountIdToCommentCountMap = Comment.nLargestCommenters(accountIdToCommentCountMap, 10);
-      ChartDataWithTotalCommentCount data = new ChartDataWithTotalCommentCount(accountIdToCommentCountMap, results.countEntities());
+      CommentAnalytics data = new CommentAnalytics(accountIdToCommentCountMap, results.countEntities());
 
       response.setContentType("application/json");
       Gson gson = new Gson();

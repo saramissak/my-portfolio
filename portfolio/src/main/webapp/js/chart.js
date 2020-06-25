@@ -25,22 +25,14 @@ async function drawChart(request = (new Request('/data', {method: 'POST'}))) {
     const chart = new google.visualization.ColumnChart(document.getElementById('chart-container'));
     chart.draw(data, options);
 
-    if (pageNum <= 0) {
-      document.getElementById('previous-button-top').disabled = true;
-      document.getElementById('previous-button-bottom').disabled = true
-    } else {
-      document.getElementById('previous-button-top').disabled = false;
-      document.getElementById('previous-button-bottom').disabled = false;    
-    }
+    var previousButtonDisabled = pageNum <= 0;
+    document.getElementById('previous-button-top').disabled = previousButtonDisabled;
+    document.getElementById('previous-button-bottom').disabled = previousButtonDisabled;
 
-	console.log(serverData.totalNumOfComments);
-    if (serverData.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value) {
-      document.getElementById('next-button-top').disabled = true;
-      document.getElementById('next-button-bottom').disabled = true;
-    } else {
-      document.getElementById('next-button-top').disabled = false;
-      document.getElementById('next-button-bottom').disabled = false;
-    }
+
+	var nextButtonDisabled = serverData.totalNumOfComments <= (pageNum+1)*document.getElementById('num-results').value;
+    document.getElementById('next-button-top').disabled = nextButtonDisabled;
+    document.getElementById('next-button-bottom').disabled = nextButtonDisabled;
   });
 }
 

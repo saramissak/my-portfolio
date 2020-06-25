@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-import com.google.sps.data.ChartDataWithTotalCommentCount;
+import com.google.sps.data.CommentAnalytics;
 
 @WebServlet("/delete-data")
 public class DeleteAllCommentsServlet extends HttpServlet {
@@ -47,7 +47,7 @@ public class DeleteAllCommentsServlet extends HttpServlet {
       
       Map<String, Long> accountIdToCommentCountMap = new HashMap<>();
       
-      ChartDataWithTotalCommentCount data = new ChartDataWithTotalCommentCount(accountIdToCommentCountMap, results.countEntities());
+      CommentAnalytics data = new CommentAnalytics(accountIdToCommentCountMap, results.countEntities());
       response.setContentType("application/json");
       Gson gson = new Gson();
       String json = gson.toJson(data);

@@ -14,20 +14,20 @@ public class Comment {
   public String key;
 
   public static Map<String, Long> nLargestCommenters(Map<String, Long> accountIdToCommentCountMap, int n) {
-    Long commentCounts;
+    Long commentCount;
     List<String> accountIds = new ArrayList<>(n); 
     List<Long> counts = new ArrayList<>(n); 
     int index;
 
     // Gets the top n comments
     for (String key : accountIdToCommentCountMap.keySet()) { 
-      commentCounts = accountIdToCommentCountMap.get(key); 
+      commentCount = accountIdToCommentCountMap.get(key); 
       index = accountIds.size() - 1; 
-      while (index >= 0 && commentCounts > counts.get(index)) { 
+      while (index >= 0 && commentCount > counts.get(index)) { 
         index--; 
       }
       index = index + 1; 
-      counts.add(index, commentCounts); 
+      counts.add(index, commentCount); 
       accountIds.add(index, key); 
       if (counts.size() > n) {
         counts.remove(n); 

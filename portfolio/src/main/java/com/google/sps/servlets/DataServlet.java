@@ -18,7 +18,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.data.Comment;
 import com.google.sps.data.TotalComments;
-import com.google.sps.data.ChartDataWithTotalCommentCount;
+import com.google.sps.data.CommentAnalytics;
 import java.lang.String;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -195,7 +195,7 @@ public class DataServlet extends HttpServlet {
     }
     accountIdToCommentCountMap = Comment.nLargestCommenters(accountIdToCommentCountMap, 10);
 
-    ChartDataWithTotalCommentCount data = new ChartDataWithTotalCommentCount(accountIdToCommentCountMap, results.countEntities());
+    CommentAnalytics data = new CommentAnalytics(accountIdToCommentCountMap, results.countEntities());
     response.setContentType("application/json");
     Gson gson = new Gson();
     String json = gson.toJson(data);
